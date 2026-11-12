@@ -2,6 +2,12 @@ import AddForm from "./AddForm.jsx";
 import MyListRow from "./MyListRow.jsx";
 import SharedListRow from "./SharedListRow.jsx";
 
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import MediaCard from "./components/MediaCard";
+import sampleMedia from "./data/sampleMedia";
+
 // the home page: every list, by name, each one a link to its own page
 export default function Home({
   lists,
@@ -12,13 +18,50 @@ export default function Home({
   onLogout,
 }) {
   return (
-    <>
-      <h2>My lists</h2>
+    <Container sx={{ py: 4 }}>
+      <Typography variant="h4" component="h1">
+        My lists
+      </Typography>
+      {/* Go through every list belonging to the user */}
       {lists.map((list) => (
-        <MyListRow key={list.id} list={list} onShare={onShare} />
+        // One section for each custom list
+        <Box key={list.id} sx={{ mt: 4 }}>
+          {/* Display the custom list name */}
+          <Typography variant="h5" component="h2">
+            {list.get("name")}
+          </Typography>
+
+          {/* Horizontally scrollable area for MediaCards */}
+          <Box
+            sx={{
+              display: "flex",
+              gap: 3,
+              overflowX: "auto",
+              py: 2,
+            }}
+          >
+            {/* Go through our sample media and create one card per item */}
+            {sampleMedia.map((item) => (
+              <Box key={item.id} sx={{ flexShrink: 0 }}>
+                <MediaCard
+                  title={item.title}
+                  type={item.type}
+                  creator={item.creator}
+                  year={item.year}
+                  status={item.status}
+                  favourite={item.favourite}
+                />
+              </Box>
+            ))}
+          </Box>
+        </Box>
       ))}
 
-      {memberships.length > 0 && <h2>Shared with me</h2>}
+      {memberships.length > 0 && (
+        <Typography variant="h5" sx={{ mt: 4 }}>
+          Shared with me
+        </Typography>
+      )}
       {memberships.map((membership) => (
         <SharedListRow
           key={membership.id}
@@ -27,12 +70,14 @@ export default function Home({
         />
       ))}
 
-      <br />
-      <br />
-      <h3>List Manager</h3>
+      <Typography variant="h5" sx={{ mt: 4 }}>
+        List Manager
+      </Typography>
       <AddForm onAdd={onAddList} buttonLabel="New list" />
-      <h3>Account</h3>
+      <Typography variant="h5" sx={{ mt: 4 }}>
+        Account
+      </Typography>
       <button onClick={onLogout}>Logout</button>
-    </>
+    </Container>
   );
 }
