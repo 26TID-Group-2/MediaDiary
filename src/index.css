@@ -1,0 +1,64 @@
+/* ============================================================
+   index.css
+   Our design tokens from the design system in Figma, written as
+   CSS variables. This file collects all our colours, fonts and
+   shapes in one place. The whole app gets its colours from here,
+   so if we change a colour here, it changes everywhere it is used.
+
+   How to use a variable:
+     In a CSS file:      color: var(--color-primary);
+     In MUI's sx prop:   sx={{ color: "var(--color-primary)" }}
+   ============================================================ */
+
+/* Loads the Roboto font from Google Fonts in three weights:
+   400 = regular, 500 = medium, 700 = bold. */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
+
+/* :root means "the whole page", so these variables can be used
+   everywhere in the app. A CSS variable always starts with --  */
+:root {
+  /* --- Colours (Figma: Brand colors) --- */
+
+  /* Purple main colour: buttons, hearts and other main actions */
+  --color-primary: #5e35b1;
+  /* Darker purple: hover and active states, card titles and icons */
+  --color-primary-dark: #4527a0;
+
+  /* Red: error messages and error states in forms */
+  --color-error: #c62828;
+
+  /* Almost black with a hint of purple: normal text */
+  --color-text-primary: #1f1633;
+  /* Dark grey: less important text, such as author and year */
+  --color-text-secondary: #49454f;
+
+  /* Light purple background behind the whole page */
+  --color-background: #f3effb;
+  /* White: cards and dialogs (Surface in Figma) */
+  --color-surface: #ffffff;
+
+  /* Grey: the cover placeholder on the cards */
+  --color-grey: #5f5f6b;
+  /* Light grey: disabled buttons */
+  --color-light-grey: #dbdada;
+
+  /* --- Typography --- */
+
+  /* All text uses Roboto. sans-serif is a backup font, used if
+     Roboto cannot be loaded for some reason. */
+  --font-family: "Roboto", sans-serif;
+
+  /* --- Shape --- */
+
+  /* How rounded the corners are on cards, buttons and so on.
+     The bigger the number, the rounder the corners. */
+  --radius: 16px;
+}
+
+/* Basic styling for the whole page, using the variables above. */
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  color: var(--color-text-primary);
+  background-color: var(--color-background);
+}

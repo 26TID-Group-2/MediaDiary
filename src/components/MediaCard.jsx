@@ -119,14 +119,14 @@ function MediaCard({ title, type, creator, year, status, favourite }) {
 
   return (
     //The whole card - sx sets its width to 280 pixels
-    <Card sx={{ width: 280 }}>
+    <Card sx={{ width: 280, borderRadius: "var(--radius)" }}>
       {/* Cover placeholder: a grey box with an image icon in the middle.
           display: "flex" + alignItems + justifyContent is the standard
           way to centre something both vertically and horizontally. */}
       <Box
         sx={{
           height: 160,
-          bgcolor: "grey.600",
+          bgcolor: "var(--color-grey)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -145,7 +145,7 @@ function MediaCard({ title, type, creator, year, status, favourite }) {
               {/* titleAccess gives the icon a text that screen readers
                   read aloud, for example "Movie". */}
               <TypeIcon
-                sx={{ color: "primary.dark" }}
+                sx={{ color: "var(--color-primary-dark)" }}
                 titleAccess={typeInfo[type].label}
               />
               <Typography
@@ -159,7 +159,11 @@ function MediaCard({ title, type, creator, year, status, favourite }) {
             {/* creator is a list, so .join(", ") turns
                 ["Marta Kauffman", "David Crane"] into
                 "Marta Kauffman, David Crane". */}
-            <Typography variant="body2" color="text.secondary">
+            <Typography
+              variant="body2"
+              sx={{ color: "var(--color-text-secondary)" }}
+            >
+              {" "}
               {creator.join(", ")}, {year}
             </Typography>
           </Box>
@@ -188,9 +192,9 @@ function MediaCard({ title, type, creator, year, status, favourite }) {
             }
           >
             {isFavourite ? (
-              <FavoriteIcon sx={{ color: "primary.main" }} />
+              <FavoriteIcon sx={{ color: "var(--color-primary)" }} />
             ) : (
-              <FavoriteBorderIcon sx={{ color: "primary.main" }} />
+              <FavoriteBorderIcon sx={{ color: "var(--color-primary)" }} />
             )}
           </IconButton>
         </Box>
@@ -210,7 +214,7 @@ function MediaCard({ title, type, creator, year, status, favourite }) {
           <Chip
             label={currentStatus}
             size="small"
-            sx={{ bgcolor: "background.default" }}
+            sx={{ bgcolor: "var(--color-background)" }}
           />
 
           <IconButton
