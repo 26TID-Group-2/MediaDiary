@@ -22,9 +22,16 @@ export default function Home({
         My lists
       </Typography>
 
-      {lists.map((list) => (
-        <MediaList key={list.id} name={list.get("name")} media={sampleMedia} />
-      ))}
+      {lists.map((list) => {
+        return (
+          <MediaList
+            key={list.id}
+            listId={list.id}
+            name={list.get("name")}
+            media={sampleMedia}
+          />
+        );
+      })}
 
       {memberships.length > 0 && (
         <Typography variant="h5" sx={{ mt: 4 }}>
