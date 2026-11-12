@@ -1,10 +1,10 @@
-import "./App.css";
-import Home from "./Home.jsx";
-import ListPage from "./ListPage.jsx";
+import "./styling/App.css";
+import Home from "./pages/Home.jsx";
+import ListPage from "./pages/ListPage.jsx";
 import { Link, Route, Routes } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import AuthPage from "./AuthPage.jsx";
+import AuthPage from "./pages/AuthPage.jsx";
 import { currentUser, logOut } from "./services/authService.js";
 import {
   loadMyLists,

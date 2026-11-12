@@ -1,12 +1,12 @@
-import AddForm from "./AddForm.jsx";
-import MyListRow from "./MyListRow.jsx";
-import SharedListRow from "./SharedListRow.jsx";
+import AddForm from "../components/AddForm.jsx";
+import MyListRow from "../components/MyListRow.jsx";
+import SharedListRow from "../components/SharedListRow.jsx";
 
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import MediaCard from "./components/MediaCard";
-import sampleMedia from "./data/sampleMedia";
+import MediaCard from "../components/MediaCard.jsx";
+import sampleMedia from "../data/sampleMedia.js";
 
 // the home page: every list, by name, each one a link to its own page
 export default function Home({
