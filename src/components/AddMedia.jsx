@@ -1,17 +1,13 @@
-import { use, useState } from "react";
+import {useState } from "react";
 import TextInput from "./TextInput";
 
-    const temporaryList = [{ id: "1", name:"cinema", type: "movie"}, {id: "2", name: "lavoro", type: "book" }, {id: "3", name: "sera", type :"tv serie"}]
 
-export default function AddMedia (){
+export default function AddMedia ({lists}){
 
     const [title, setTitle] = useState("")
     const [list, setList] = useState("")
 
-function handleList(e){
-   value = {value}
 
-}
 
     return (
 
@@ -19,17 +15,22 @@ function handleList(e){
         <h1>Add Media</h1>
          <TextInput value = {title} onChange = {setTitle} />
 
-        <select value = {list} onChange = {(event) => setList(event.target.value)}
+        <select value = {list} onChange = {(event) => setList(event.target.value)} 
          >
-            {temporaryList.map((list) =>  (
-              <option key = {list.id}
-               value = {list.id}   > 
+                    {/* select works with string */} 
 
-               {list.name}
+            <option value = ""> Select a list</option>
+            {lists.map((item) =>  (
+              <option key = {item.id}
+               value = {item.id}   > 
+
+               {item.get("name")}
 
         </option>
             ))}
             </select>
+                        <p> {list}</p>
+
         </form> 
         
     )

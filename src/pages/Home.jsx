@@ -73,7 +73,9 @@ export default function Home({
 
       <Typography variant="h5" sx={{ mt: 4 }}>
         List Manager
-        <AddMedia/>
+        <AddMedia 
+        lists={lists}
+        />
       </Typography>
       <AddForm onAdd={onAddList} buttonLabel="New list" />
       <Typography variant="h5" sx={{ mt: 4 }}>
