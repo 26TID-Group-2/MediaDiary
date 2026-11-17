@@ -8,6 +8,7 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import sampleMedia from "../data/sampleMedia.js";
 import MediaList from "../components/MediaList.jsx";
+import Box from "@mui/material/Box";
 
 // the home page: every list, by name, each one a link to its own page
 export default function Home({
