@@ -1,6 +1,7 @@
 import "./styling/App.css";
 import Home from "./pages/Home.jsx";
 import ListPage from "./pages/ListPage.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
 import { Link, Route, Routes } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -13,6 +14,8 @@ import {
   shareList,
   leaveList,
 } from "./services/listService.js";
+
+import NavAppBar from "./components/NavAppBar.jsx";
 
 function App() {
   const [user, setUser] = useState(currentUser());
@@ -76,23 +79,28 @@ function App() {
   }
 
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <Home
-            lists={lists}
-            memberships={memberships}
-            onAddList={handleAddList}
-            onShare={handleShare}
-            onLeave={handleLeave}
-            onLogout={handleLogout}
-          />
-        }
-      />
-      <Route path="/lists/:listId" element={<ListPage />} />
-      <Route path="*" element={<Link to="/">No such page</Link>} />
-    </Routes>
+    <>
+      <NavAppBar onLogout={handleLogout} />
+
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Home
+              lists={lists}
+              memberships={memberships}
+              onAddList={handleAddList}
+              onShare={handleShare}
+              onLeave={handleLeave}
+              onLogout={handleLogout}
+            />
+          }
+        />
+        <Route path="/lists/:listId" element={<ListPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="*" element={<Link to="/">No such page</Link>} />
+      </Routes>
+    </>
   );
 }
 
