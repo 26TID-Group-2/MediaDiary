@@ -8,6 +8,7 @@ import Box from "@mui/material/Box";
 import MediaCard from "../components/MediaCard.jsx";
 import sampleMedia from "../data/sampleMedia.js";
 import AddMedia from "../components/AddMedia.jsx";
+import AddMediaModal from "../components/AddMediaModal.jsx";
 
 // the home page: every list, by name, each one a link to its own page
 export default function Home({
@@ -73,9 +74,11 @@ export default function Home({
 
       <Typography variant="h5" sx={{ mt: 4 }}>
         List Manager
-        <AddMedia 
-        lists={lists}
-        />
+        <AddMediaModal
+        lists = {lists}
+          />
+    
+      
       </Typography>
       <AddForm onAdd={onAddList} buttonLabel="New list" />
       <Typography variant="h5" sx={{ mt: 4 }}>

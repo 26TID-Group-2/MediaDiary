@@ -1,20 +1,49 @@
 import {useState } from "react";
 import TextInput from "./TextInput";
+import { addTodo } from "../services/todoService";
 
 
-export default function AddMedia ({lists}){
+export default function AddMedia ({lists,  onClose}){
 
     const [title, setTitle] = useState("")
-    const [selectedList, setSelectedList] = useState("")
-
+    const [selectedListId, setSelectedListId] = useState("")
+3
    
 
-    function handleSubmit (event){
+    async function handleSubmit (event){ //taliking to the database takes time, that's why it's async
         event.preventDefault();
-        console.log(title)
-        console.log(selectedList)
-        setTitle("")
-        setSelectedList("")
+        const matchingList = lists.find((list) => list.id === selectedListId); //find the matching list object in our lists array (using id)
+
+        if(!matchingList) {
+            console.error("No list found")
+            return;
+        }
+//duplicate check
+c
+        for(let item of (matchingList.get("items") || [])) { //loop through the list s item (if the list is empty, we use [] to avoid errors)
+            if (item.title == title) {
+                alert(`Warning: "${title}" is already present in this list!`);
+                return; // stops everything and prevent saving
+                }
+            }
+        
+        try {
+            const savedItem = await addTodo(matchingList, title) //passing the list object and the title the user typed. Await is used because save() talks to the database
+
+            alert(`${title} was successfully added to the list!`);
+             console.log(savedItem ,"successfully saved"); 
+
+             setTitle(""); // we set the form state back to empty
+             setSelectedListId("");
+        
+        if (onClose) {
+            onClose(); 
+        }
+
+        } catch (error) {
+            alert(error.message); 
+        }
+       
 
         
 
@@ -25,10 +54,9 @@ export default function AddMedia ({lists}){
     return (
 
         <form onSubmit={handleSubmit}>
-        <h1>Add Media</h1>
          <TextInput value = {title} onChange = {setTitle} />
 
-        <select value = {selectedList} onChange = {(event) => setSelectedList(event.target.value)} 
+        <select value = {selectedListId} onChange = {(event) => setSelectedListId(event.target.value)} 
          >
                     {/* select works with string, we store the list id*/} 
 
@@ -42,7 +70,7 @@ export default function AddMedia ({lists}){
         </option>
             ))}
             </select>
-            <button type = "submit" disabled = {!title || !selectedList}>
+            <button type = "submit" disabled = {!title || !selectedListId}>
                 Add
             </button>
 

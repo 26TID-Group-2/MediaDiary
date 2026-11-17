@@ -62,3 +62,43 @@ body {
   color: var(--color-text-primary);
   background-color: var(--color-background);
 }
+
+/* ============================================================
+   Typography Classes (Figma design system)
+   ============================================================ */
+
+/* Title: h6, Medium, 20px / 160% */
+.typography-title {
+  font-family: var(--font-family);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.6;
+  color: var(--color-text-primary);
+}
+
+/* Subtitle2: Medium, 14px / 157% */
+.typography-subtitle2 {
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.57;
+  color: var(--color-text-secondary);
+}
+
+/* Body1: Regular, 16px / 150% */
+.typography-body1 {
+  font-family: var(--font-family);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--color-text-primary);
+}
+
+/* Caption: Regular, 12px / 166% */
+.typography-caption {
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.66;
+  color: var(--color-text-secondary);
+}
