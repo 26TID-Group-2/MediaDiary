@@ -1,13 +1,15 @@
 import {useState } from "react";
 import TextInput from "./TextInput";
 import { addTodo } from "../services/todoService";
+import { searchBooks } from "../services/bookService";
 
 
 export default function AddMedia ({lists,  onClose}){
 
     const [title, setTitle] = useState("")
     const [selectedListId, setSelectedListId] = useState("")
-3
+    const [searchResults, setSearchResults] = useState([])
+
    
 
     async function handleSubmit (event){ //taliking to the database takes time, that's why it's async
@@ -19,13 +21,8 @@ export default function AddMedia ({lists,  onClose}){
             return;
         }
 //duplicate check
-c
-        for(let item of (matchingList.get("items") || [])) { //loop through the list s item (if the list is empty, we use [] to avoid errors)
-            if (item.title == title) {
-                alert(`Warning: "${title}" is already present in this list!`);
-                return; // stops everything and prevent saving
-                }
-            }
+
+       
         
         try {
             const savedItem = await addTodo(matchingList, title) //passing the list object and the title the user typed. Await is used because save() talks to the database
@@ -46,6 +43,18 @@ c
        
 
         
+
+    }
+
+    async  function handleSearch () {
+
+        try{
+            const foundBooks = await searchBooks(title)
+            setSearchResults(foundBooks)
+        }
+        catch (error) {
+            alert(error.message)
+        }
 
     }
 
