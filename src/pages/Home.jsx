@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 import sampleMedia from "../data/sampleMedia.js";
 import MediaList from "../components/MediaList.jsx";
 import Box from "@mui/material/Box";
+import AddMediaModal from "../components/AddMediaModal.jsx";
 
 // the home page: every list, by name, each one a link to its own page
 export default function Home({
@@ -49,11 +50,13 @@ export default function Home({
         />
       ))}
 
-      {/* The card for creating a new list.
-          onAddList comes from App.jsx, and saves the new list in Parse. */}
-      <Box sx={{ mt: 4 }}>
-        <AddListCard onAddList={onAddList} />
-      </Box>
+      <Typography variant="h5" sx={{ mt: 4 }}>
+        List Manager
+      </Typography>
+      <AddForm onAdd={onAddList} buttonLabel="New list" />
+      <AddMediaModal
+        lists = {lists}
+          />
       <Typography variant="h5" sx={{ mt: 4 }}>
         Account
       </Typography>
