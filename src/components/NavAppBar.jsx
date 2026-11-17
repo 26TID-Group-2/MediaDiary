@@ -8,6 +8,7 @@ import { useState } from "react";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Link } from "react-router-dom";
+import Divider from "@mui/material/Divider";
 
 export default function NavAppBar({ onLogout }) {
   const [menuAnchor, setMenuAnchor] = useState(null);
@@ -54,6 +55,12 @@ export default function NavAppBar({ onLogout }) {
             <MenuItem component={Link} to="/friends" onClick={handleMenuClose}>
               Friends
             </MenuItem>
+
+            <MenuItem component={Link} to="/profile" onClick={handleMenuClose}>
+              Profile
+            </MenuItem>
+
+            <Divider />
 
             <MenuItem onClick={onLogout}>Log out</MenuItem>
           </Menu>
