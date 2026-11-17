@@ -7,7 +7,6 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import MediaCard from "../components/MediaCard.jsx";
 import sampleMedia from "../data/sampleMedia.js";
-import AddMedia from "../components/AddMedia.jsx";
 import AddMediaModal from "../components/AddMediaModal.jsx";
 
 // the home page: every list, by name, each one a link to its own page
