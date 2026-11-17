@@ -1,6 +1,7 @@
 import "./styling/App.css";
 import Home from "./pages/Home.jsx";
 import ListPage from "./pages/ListPage.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
 import { Link, Route, Routes } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -96,6 +97,7 @@ function App() {
           }
         />
         <Route path="/lists/:listId" element={<ListPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
         <Route path="*" element={<Link to="/">No such page</Link>} />
       </Routes>
     </>
