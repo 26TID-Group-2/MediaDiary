@@ -3,8 +3,6 @@ import { Link, useParams } from "react-router-dom";
 import { loadList } from "../services/listService.js";
 import MediaList from "../components/MediaList.jsx";
 import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import sampleMedia from "../data/sampleMedia.js";
 
 export default function ListPage() {
@@ -28,7 +26,7 @@ export default function ListPage() {
   }, [listId]);
 
   return (
-    <>
+    <Container sx={{ py: 4 }}>
       <Link to="/">← All lists</Link>
 
       {error ? (
@@ -44,6 +42,6 @@ export default function ListPage() {
           layout="wrap"
         />
       )}
-    </>
+    </Container>
   );
 }
