@@ -3,9 +3,10 @@ import { Link, useParams } from "react-router-dom";
 import { loadList } from "../services/listService.js";
 import MediaList from "../components/MediaList.jsx";
 import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import sampleMedia from "../data/sampleMedia.js";
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 
 export default function ListPage() {
   // the :listId part of the URL, e.g. /lists/Xk3v9QaB2c
@@ -28,8 +29,17 @@ export default function ListPage() {
   }, [listId]);
 
   return (
-    <>
-      <Link to="/">← All lists</Link>
+    <Container sx={{ py: 3 }}>
+      <Button
+        component={Link}
+        to="/"
+        startIcon={<KeyboardBackspaceIcon />}
+        color="primary"
+        size="large"
+        sx={{ textTransform: "none" }}
+      >
+        All lists
+      </Button>
 
       {error ? (
         <p>{error}</p>
@@ -44,6 +54,6 @@ export default function ListPage() {
           layout="wrap"
         />
       )}
-    </>
+    </Container>
   );
 }
