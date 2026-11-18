@@ -53,6 +53,21 @@ const sampleMedia = [
 
     favourite: true,
   },
+  {
+    id: 4,
+
+    type: "Movie",
+
+    title: "Eternal Sunshine of the Spotless Mind", //trying a long title
+
+    creator: ["Michel Gondry"],
+
+    year: 2004,
+
+    status: "In Progress",
+
+    favourite: true,
+  },
 ];
 
 export default sampleMedia;

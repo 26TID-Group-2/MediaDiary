@@ -46,6 +46,12 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
+//Tooltip allows show text on hover and on keyboard focus
+import Tooltip from "@mui/material/Tooltip";
+
+//the pop-up dialog for editing item
+import EditItemDialog from "./EditMediaDialog";
+
 // typeInfo connects each media type to its icon and a readable word.
 // The names Book, Movie and TV must be written EXACTLY like the
 // "type" values in sampleMedia.js, otherwise the card cannot find them.
@@ -62,6 +68,8 @@ const statuses = ["Interested", "In Progress", "Finished"];
 //The MediaCard component itself.
 //The values inside {} are the PROPS - the information App gives to the card.
 //Writing them like this takes them straight out. That means we can just write year instead of props.year
+
+//TODO: add picture
 function MediaCard({ title, type, creator, year, status, favourite }) {
   //Look up the right icon for this card's type.
   //For example, if the card's type is Movie TypeIcon becomes MovieOutlinedIcon
@@ -77,7 +85,11 @@ function MediaCard({ title, type, creator, year, status, favourite }) {
 
   // The card's own memory of its current status.
   // It starts with the status from sampleMedia, for example "Finished".
+  //TODO - change this since it is no longer updated this way
   const [currentStatus, setCurrentStatus] = useState(status);
+
+  //state for opening and closing edit dialog
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   // Which element the menu is attached to.
   // MUI needs to know WHERE on the screen to open the menu, so we
@@ -110,11 +122,14 @@ function MediaCard({ title, type, creator, year, status, favourite }) {
     setMenuAnchor(null);
   }
 
-  // Runs when the user picks a status in the menu.
-  // It saves the new status and closes the menu.
-  function handleStatusChange(newStatus) {
-    setCurrentStatus(newStatus);
+  function handleEditClick() {
     setMenuAnchor(null);
+    setIsEditOpen(true);
+  }
+
+  function handleAddToListClick() {
+    setMenuAnchor(null);
+    // TODO: open the add form/dialog
   }
 
   return (
@@ -139,7 +154,7 @@ function MediaCard({ title, type, creator, year, status, favourite }) {
         {/* TOP ROW: text on the left, heart on the right.
         justifyContent: "space-between" pushes them apart. */}
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Box>
+          <Box sx={{ minWidth: 0, flext: 1 }}>
             {/* Left side: icon + title, and creator + year below. */}
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               {/* titleAccess gives the icon a text that screen readers
@@ -148,23 +163,33 @@ function MediaCard({ title, type, creator, year, status, favourite }) {
                 sx={{ color: "var(--color-primary-dark)" }}
                 titleAccess={typeInfo[type].label}
               />
-              <Typography
-                variant="h6"
-                component="h3"
-                sx={{ color: "primary.dark" }}
-              >
-                {title}
-              </Typography>
+              <Tooltip title={title} placement="top">
+                <Typography
+                  variant="h6"
+                  component="h3"
+                  noWrap
+                  sx={{ color: "primary.dark" }}
+                >
+                  {title}
+                </Typography>
+              </Tooltip>
             </Box>
             {/* creator is a list, so .join(", ") turns
                 ["Marta Kauffman", "David Crane"] into
-                "Marta Kauffman, David Crane". */}
+                "Marta Kauffman, David Crane". */}{" "}
+            <Tooltip title={creator.join(", ")} placement="top">
+              <Typography
+                variant="body2"
+                sx={{ color: "var(--color-text-secondary)" }}
+              >
+                {creator.join(", ")}
+              </Typography>
+            </Tooltip>
             <Typography
               variant="body2"
               sx={{ color: "var(--color-text-secondary)" }}
             >
-              {" "}
-              {creator.join(", ")}, {year}
+              {year}
             </Typography>
           </Box>
           {/* The heart button.
@@ -235,18 +260,22 @@ function MediaCard({ title, type, creator, year, status, favourite }) {
             open={isMenuOpen}
             onClose={handleMenuClose}
           >
-            {statuses.map((option) => (
-              <MenuItem
-                key={option}
-                selected={option === currentStatus}
-                onClick={() => handleStatusChange(option)}
-              >
-                {option}
-              </MenuItem>
-            ))}
+            <MenuItem onClick={handleEditClick}>Edit item</MenuItem>
+            <MenuItem onClick={handleAddToListClick}>Add to list</MenuItem>
           </Menu>
         </Box>
       </CardContent>
+      <EditItemDialog
+        open={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        title={title}
+        type={type}
+        creator={creator}
+        year={year}
+        status={currentStatus}
+        onSave={setCurrentStatus}
+        onRemove={() => {}}
+      />
     </Card>
   );
 }
