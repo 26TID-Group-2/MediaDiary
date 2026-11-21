@@ -5,6 +5,8 @@ import { searchBooks } from "../services/bookService";
 import IconButton from "@mui/material/IconButton";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import Chip from "@mui/material/Chip";
+import Box from "@mui/material/Box";
 
 
 
@@ -19,7 +21,10 @@ export default function AddMedia ({lists,  onClose}){
 
     const [like, setLike] = useState(false)
 
-    const[status,setStatus] = useState("interested")
+    const statuses = ["Interested", "In Progress", "Finished"]; 
+    const [currentStatus, setCurrentStatus] = useState("interested");
+
+
 
    
     //database handler :
@@ -81,17 +86,24 @@ export default function AddMedia ({lists,  onClose}){
     return (
 
         <form onSubmit={handleSubmit}>
+        {/* Box stacks the fields vertically, with a gap between them */}
+        <Box sx= {{ display: "flex", flexDirection: "column", gap: 2 }}>
+        {/* title field and search button side by side */}
+
+        <Box sx= {{ display: "flex", gap:  1}}>
          <TextInput value = {title} onChange = {setTitle} /> {/* TextInput, updates the title state when the user types */}
         
-        <button type='button' onClick={handleSearch} > Search {}
+        <button type='button' onClick={handleSearch} disabled={!title}> Search 
 
         </button>
 
-      
+        </Box>
 
         
 
-        <select value = {selectedListId} onChange = {(event) => setSelectedListId(event.target.value)} 
+        <select 
+        value = {selectedListId} 
+        onChange = {(event) => setSelectedListId(event.target.value)} 
          >
                     {/* select works with string, we store the list id*/} 
 
@@ -105,6 +117,23 @@ export default function AddMedia ({lists,  onClose}){
         </option>
             ))}
          </select>
+
+        {/* One chip per status, the chosen one is filled, the others only outlined */}
+        <Box sx= {{display: "flex", gap: 1}}>
+            {statuses.map((option) => (
+            <Chip
+            key={option}
+            label={option}
+            onClick={() => setCurrentStatus(option)}
+            variant={option === currentStatus ? "filled" : "outlined"}
+            aria-pressed={option === currentStatus}
+
+            />
+            ))}
+            </Box>
+
+         {/* hearth button: toggles the like state */}
+
          <IconButton
             onClick={() => setLike(!like)}
             aria-pressed={like}
@@ -121,12 +150,11 @@ export default function AddMedia ({lists,  onClose}){
             )}
           </IconButton>
 
+
          <button type = "submit" disabled = {!title || !selectedListId}>
-
-
-
-                Add
+               Add
             </button>
+            </Box>
 
         </form>        
     );
