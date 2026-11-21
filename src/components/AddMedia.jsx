@@ -2,6 +2,10 @@ import {useState } from "react";
 import TextInput from "./TextInput";
 import { addTodo } from "../services/todoService";
 import { searchBooks } from "../services/bookService";
+import IconButton from "@mui/material/IconButton";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+
 
 
 export default function AddMedia ({lists,  onClose}){
@@ -12,6 +16,10 @@ export default function AddMedia ({lists,  onClose}){
     const [selectedListId, setSelectedListId] = useState("")
     // searchResults stores the array of books returned by the Open Library API
     const [searchResults, setSearchResults] = useState([])
+
+    const [like, setLike] = useState(false)
+
+    const[status,setStatus] = useState("interested")
 
    
     //database handler :
@@ -51,6 +59,8 @@ export default function AddMedia ({lists,  onClose}){
         
 
     }
+
+   
 
     //API search handler
     //connects to bookService, fetch book from Open Library
@@ -94,8 +104,27 @@ export default function AddMedia ({lists,  onClose}){
 
         </option>
             ))}
-            </select>
-            <button type = "submit" disabled = {!title || !selectedListId}>
+         </select>
+         <IconButton
+            onClick={() => setLike(!like)}
+            aria-pressed={like}
+            aria-label={
+              like
+                ? "Remove from favourites"
+                : "Add to favourites"
+            }
+          >
+            {like ? (
+              <FavoriteIcon sx={{ color: "var(--color-primary)" }} />
+            ) : (
+              <FavoriteBorderIcon sx={{ color: "var(--color-primary)" }} />
+            )}
+          </IconButton>
+
+         <button type = "submit" disabled = {!title || !selectedListId}>
+
+
+
                 Add
             </button>
 
