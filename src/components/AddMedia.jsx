@@ -25,6 +25,10 @@ export default function AddMedia({ lists, onClose }) {
   const [creator, setCreator] = useState("");
   const [year, setYear] = useState("");
 
+
+  const [picture, setPicture] = useState("");
+  const [mediaType, setMediaType] = useState("book");
+  const [isSaving, setIsSaving] = useState (false);
   // async because talking to the database (Back4App) takes time
   async function handleSubmit(event) {
     event.preventDefault(); // prevents the page from reloading
@@ -42,7 +46,16 @@ export default function AddMedia({ lists, onClose }) {
 
     try {
       // await pauses until the database confirms the item is saved
-      const savedItem = await addTodo(matchingList, title);
+      const savedItem = await addTodo(matchingList, {
+        title: title.trim(),
+        creator: creator.trim() || "author unknown",
+        releaseYear: year,
+        pictureUrl: picture,
+        mediaType,
+        status: currentStatus,
+        like,
+});
+
 
       alert(`${title} was successfully added to the list!`);
       console.log(savedItem, "successfully saved");
@@ -54,6 +67,8 @@ export default function AddMedia({ lists, onClose }) {
       setYear("");
       setLike(false);
       setCurrentStatus("Interested");
+      setPicture("");
+      setMediaType("book"); 
 
       if (onClose) {
         onClose(); // closes the modal
@@ -74,11 +89,20 @@ export default function AddMedia({ lists, onClose }) {
     }
   }
 
+  //
+  function getCoverUrl (coverId) {
+    if (!coverId) return "";
+    return `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`;
+}
+  
+
   // runs when the user clicks a book in the results: fills the form
   function handleSelectBook(book) {
     setTitle(book.title);
     setCreator(book.author_name?.join(", ") || "author unknown");
     setYear(book.first_publish_year || "");
+    setPicture(getCoverUrl(book.cover_i));
+    setMediaType("book");
 
     // hides the search results
     setSearchResults([]);
@@ -109,6 +133,24 @@ export default function AddMedia({ lists, onClose }) {
             {book.first_publish_year ? `, ${book.first_publish_year}` : ""}
           </button>
         ))}
+
+        {picture && (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+    <img
+      src={picture}
+      alt={title || "Book cover"}
+      style={{ width: 64, height: 96, objectFit: "cover", borderRadius: 6 }}
+    />
+    <Box>
+      <div><strong>{title}</strong></div>
+      <div>{creator}</div>
+      {year && <div>{year}</div>}
+    </Box>
+  </Box>
+)}
+
+
+        
 
         {/* a select works with strings, so we store the list id */}
         <select

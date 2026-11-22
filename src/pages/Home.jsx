@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import AddForm from "../components/AddForm.jsx";
 import MyListRow from "../components/MyListRow.jsx";
 import SharedListRow from "../components/SharedListRow.jsx";
@@ -10,6 +11,7 @@ import sampleMedia from "../data/sampleMedia.js";
 import MediaList from "../components/MediaList.jsx";
 import Box from "@mui/material/Box";
 import AddMediaModal from "../components/AddMediaModal.jsx";
+import { loadTodos } from "../services/todoService.js";
 
 // the home page: every list, by name, each one a link to its own page
 export default function Home({
@@ -20,6 +22,8 @@ export default function Home({
   onLeave,
   onLogout,
 }) {
+
+  const [mediaByList, setMediaByList] = useState({});
   return (
     <Container sx={{ py: 4 }}>
       <Typography variant="h4" component="h1">
@@ -32,7 +36,7 @@ export default function Home({
             key={list.id}
             listId={list.id}
             name={list.get("name")}
-            media={sampleMedia}
+            media={mediaByList[list.id] || []}
           />
         );
       })}

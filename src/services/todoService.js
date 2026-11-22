@@ -1,6 +1,6 @@
 import Parse from "./parse.js";
 
-const TodoItem = Parse.Object.extend("TodoItem");
+const TodoItem = Parse.Object.extend("MediaItem");
 
 // may the current user change this object? asks its ACL
 export function canWrite(parseObject) {
@@ -11,11 +11,17 @@ export function canWrite(parseObject) {
   return acl.getPublicWriteAccess() || acl.getWriteAccess(user);
 }
 
-// a row from the database, as the components want to see it
+// a row from the database, as  the components want to see it
 function toTodo(item) {
   return {
     id: item.id,
-    text: item.get("text"),
+    title: item.get("title"),
+    creator: item.get("creator") || "",
+    releaseYear: item.get("releaseYear") || "",
+    picture: item.get("picture") || "",
+    mediaType: item.get("mediaType") || "book",
+    status: item.get("status") || "Interested",
+    like: Boolean(item.get("like")),
     done: item.get("done"),
     canWrite: canWrite(item),
   };
@@ -30,9 +36,17 @@ export async function loadTodos(list) {
   return results.map(toTodo);
 }
 
-export async function addTodo(list, text) {
+export async function addTodo(list, mediaData) {
+  console.log("addTodo received:", mediaData);
   const item = new TodoItem();
-  item.set("text", text);
+
+  item.set("title", mediaData.title || ""); 
+  item.set("creator", mediaData.creator || "author unknown");
+  item.set("releaseYear", mediaData.releaseYear ? String(mediaData.releaseYear) : null);
+  item.set("pictureUrl", mediaData.pictureUrl || "");
+  item.set("mediaType", mediaData.mediaType || "book");
+  item.set("status", mediaData.status || "Interested");
+  item.set("like", Boolean(mediaData.like));
   item.set("done", false);
   item.set("list", list);
 

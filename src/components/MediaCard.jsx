@@ -62,10 +62,16 @@ const statuses = ["Interested", "In Progress", "Finished"];
 //The MediaCard component itself.
 //The values inside {} are the PROPS - the information App gives to the card.
 //Writing them like this takes them straight out. That means we can just write year instead of props.year
-function MediaCard({ title, type, creator, year, status, favourite }) {
+function MediaCard({ title, type, creator, year, status, favourite, picture }) {
   //Look up the right icon for this card's type.
   //For example, if the card's type is Movie TypeIcon becomes MovieOutlinedIcon
-  const TypeIcon = typeInfo[type].icon;
+//normalization to lowercase so both Book and book work
+  const normalizedType = typeof type === "string" ? type.toLowerCase() : "";
+  const currentType = typeInfo[normalizedType] || typeInfo.Book;
+
+    const TypeIcon = currentType.icon;
+
+
 
   // STATE: the card's own memory of whether it is a favourite.
   // useState(favourite) creates the memory and fills it with the
@@ -73,7 +79,8 @@ function MediaCard({ title, type, creator, year, status, favourite }) {
   // It gives us back two things, which we name ourselves:
   //   isFavourite    -> the current value (true or false)
   //   setIsFavourite -> the function we call to change the value
-  const [isFavourite, setIsFavourite] = useState(favourite);
+    const [isFavourite, setIsFavourite] = useState(Boolean(favourite));
+
 
   // The card's own memory of its current status.
   // It starts with the status from sampleMedia, for example "Finished".
@@ -130,9 +137,22 @@ function MediaCard({ title, type, creator, year, status, favourite }) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          overflow: "hidden",
         }}
       >
+        {/* if picture exists, show  it */}
+
+        {picture ? (
+          <img
+            src={picture}
+            alt={title || "Cover"}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        ) : (
+// otherwise, show the deafult icon image
+
         <ImageOutlinedIcon sx={{ fontSize: 48, color: "white" }} />
+        )}
       </Box>
 
       <CardContent>
@@ -146,7 +166,7 @@ function MediaCard({ title, type, creator, year, status, favourite }) {
                   read aloud, for example "Movie". */}
               <TypeIcon
                 sx={{ color: "var(--color-primary-dark)" }}
-                titleAccess={typeInfo[type].label}
+                titleAccess={currentType.label} // use currentType.label to match the normalized media type
               />
               <Typography
                 variant="h6"
@@ -164,7 +184,8 @@ function MediaCard({ title, type, creator, year, status, favourite }) {
               sx={{ color: "var(--color-text-secondary)" }}
             >
               {" "}
-              {creator.join(", ")}, {year}
+              {Array.isArray(creator) ? creator[0] || "" : creator || ""} {/* Display a single creator string, with array fallback just in case) */}
+              {year ? `, ${year}` : ""}
             </Typography>
           </Box>
           {/* The heart button.
