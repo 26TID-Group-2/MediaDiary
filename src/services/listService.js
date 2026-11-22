@@ -1,8 +1,8 @@
 import Parse from "./parse.js";
 
 const List = Parse.Object.extend("List");
-const TodoItem = Parse.Object.extend("TodoItem");
-const ListMember = Parse.Object.extend("ListMember");
+const TodoItem = Parse.Object.extend("MediaItem");
+const ListMember = Parse.Object.extend("Contributer");
 
 export async function loadMyLists() {
   return new Parse.Query(List).equalTo("owner", Parse.User.current()).find();
@@ -71,4 +71,24 @@ export async function shareList(list, username) {
 // deletes my row; the ACLs on the list and its to-dos still name me
 export async function leaveList(membership) {
   await membership.destroy();
+}
+
+// the owner removes the list, its tasks, and every membership on it
+// added from Mircea's code
+export async function deleteList(list) {
+  const todos = await new Parse.Query(TodoItem).equalTo("list", list).find();
+  const members = await new Parse.Query(ListMember)
+    .equalTo("list", list)
+    .find();
+
+  await Parse.Object.destroyAll([...todos, ...members, list]);
+}
+
+export async function renameList(list, newName) {
+  const name = newName.trim();
+  if (!name) {
+    throw new Error("List name cannot be empty");
+  }
+  list.set("name", name);
+  return list.save();
 }
