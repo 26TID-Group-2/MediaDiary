@@ -1,7 +1,7 @@
 import Parse from "./parse.js";
 
 const List = Parse.Object.extend("List");
-const TodoItem = Parse.Object.extend("TodoItem");
+const TodoItem = Parse.Object.extend("MediaItem");
 const ListMember = Parse.Object.extend("ListMember");
 
 export async function loadMyLists() {

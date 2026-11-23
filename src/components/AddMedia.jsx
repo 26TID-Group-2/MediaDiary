@@ -7,11 +7,14 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
+import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 
-const statuses = ["Interested", "In Progress", "Finished"];  // the possible statuses; it never changes, so it lives outside the component
+const statuses = ["Interested", "In Progress", "Finished"]; // the possible statuses; it never changes, so it lives outside the component
 
-export default function AddMedia({ lists, onClose }) {
-  // title stores what the user types in
+export default function AddMedia({ lists, onClose, onMediaItemAdded }) { // use OnMediaItemAdded so the parent can update the list 
+// stores what the user types 
+  const [searchQuery, setSearchQuery] = useState("");  
+  // title stores the title of the selected media
   const [title, setTitle] = useState("");
   // selectedListId stores the id of the list chosen in the dropdown menu
   const [selectedListId, setSelectedListId] = useState("");
@@ -24,11 +27,11 @@ export default function AddMedia({ lists, onClose }) {
   // creator and year come from the book the user picks in the search results
   const [creator, setCreator] = useState("");
   const [year, setYear] = useState("");
-
-
+  // cover image URL for the selected book
   const [picture, setPicture] = useState("");
+  // media type saved with the item
   const [mediaType, setMediaType] = useState("book");
-  const [isSaving, setIsSaving] = useState (false);
+
   // async because talking to the database (Back4App) takes time
   async function handleSubmit(event) {
     event.preventDefault(); // prevents the page from reloading
@@ -54,21 +57,26 @@ export default function AddMedia({ lists, onClose }) {
         mediaType,
         status: currentStatus,
         like,
-});
+      });
+      // notify Home that a new item was saved so it appears immediately
 
+      if (onMediaItemAdded) {
+        onMediaItemAdded(matchingList.id, savedItem);
+      }
 
       alert(`${title} was successfully added to the list!`);
       console.log(savedItem, "successfully saved");
 
       // reset the form after saving
       setTitle("");
+      setSearchQuery("");
       setSelectedListId("");
       setCreator("");
       setYear("");
       setLike(false);
       setCurrentStatus("Interested");
       setPicture("");
-      setMediaType("book"); 
+      setMediaType("book");
 
       if (onClose) {
         onClose(); // closes the modal
@@ -82,23 +90,23 @@ export default function AddMedia({ lists, onClose }) {
   // API search handler: asks bookService for books matching the title
   async function handleSearch() {
     try {
-      const foundBooks = await searchBooks(title);
+      const foundBooks = await searchBooks(searchQuery);
       setSearchResults(foundBooks);
     } catch (error) {
       alert(error.message);
     }
   }
 
-  //
-  function getCoverUrl (coverId) {
+  // builds Open Library cover URL from cover id
+  function getCoverUrl(coverId) {
     if (!coverId) return "";
     return `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`;
-}
-  
+  }
 
   // runs when the user clicks a book in the results: fills the form
   function handleSelectBook(book) {
     setTitle(book.title);
+    setSearchQuery(book.title)
     setCreator(book.author_name?.join(", ") || "author unknown");
     setYear(book.first_publish_year || "");
     setPicture(getCoverUrl(book.cover_i));
@@ -114,43 +122,105 @@ export default function AddMedia({ lists, onClose }) {
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {/* title field and search button side by side */}
         <Box sx={{ display: "flex", gap: 1 }}>
-          <TextInput value={title} onChange={setTitle} />
-          <button type="button" onClick={handleSearch} disabled={!title}>
+          <TextInput 
+          value={searchQuery} 
+          onChange={(newValue) => {
+            setSearchQuery(newValue);
+            setSearchResults([]); 
+
+            
+            if(title) {
+                setTitle("");
+                setCreator("");
+                setYear("");
+                setPicture("");
+            }
+           }} />
+          <button type="button" onClick={handleSearch} disabled={!searchQuery.trim()}>
             Search
           </button>
         </Box>
 
         {/* one clickable row per book found */}
-        {searchResults.map((book) => (
-          <button
-            type="button" // so it does not submit the form
-            key={book.key} // unique id from Open Library, tells the books apart
-            onClick={() => handleSelectBook(book)}
-          >
-            {book.title}
-            {" - "}
-            {book.author_name?.join(", ") || "author unknown"}
-            {book.first_publish_year ? `, ${book.first_publish_year}` : ""}
-          </button>
-        ))}
+        {/* one clickable row per book found */}
+        {searchResults.map((book) => {
+          const coverUrl = getCoverUrl(book.cover_i);
 
-        {picture && (
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-    <img
-      src={picture}
-      alt={title || "Book cover"}
-      style={{ width: 64, height: 96, objectFit: "cover", borderRadius: 6 }}
-    />
-    <Box>
-      <div><strong>{title}</strong></div>
-      <div>{creator}</div>
-      {year && <div>{year}</div>}
-    </Box>
-  </Box>
-)}
+          return (
+            <button
+              type="button" // so it does not submit the form
+              key={book.key} // unique id from Open Library, tells the books apart
+              onClick={() => handleSelectBook(book)}
+              style={{ display: "flex", alignItems: "center", gap: 10, textAlign: "left" }}
+            >
+              {coverUrl ? (
+                <img
+                  src={coverUrl}
+                  alt={book.title}
+                  style={{ width: 36, height: 54, objectFit: "cover", borderRadius: 4, flexShrink: 0 }}
+                />
+              ) : (
+                <Box
+                  sx={{
+                    width: 36,
+                    height: 54,
+                    borderRadius: "4px",
+                    bgcolor: "var(--color-grey)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <ImageOutlinedIcon sx={{ fontSize: 18, color: "white" }} />
+                </Box>
+              )}
 
+              <span>
+                <strong>{book.title}</strong>
+                {" - "}
+                {book.author_name?.join(", ") || "author unknown"}
+                {book.first_publish_year ? `, ${book.first_publish_year}` : ""}
+              </span>
+            </button>
+          );
+        })}       
 
-        
+        {title && (
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}> {/* shows default image when cover picture is undefined */}
+           {picture ? (
+
+            <img
+              src={picture}
+              alt={title || "Book cover"}
+              style={{ width: 64, height: 96, objectFit: "cover", borderRadius: 6 }}
+            />
+            ) : (
+                <Box
+        sx={{
+          width: 64,
+          height: 96,
+          borderRadius: "6px",
+          bgcolor: "var(--color-grey)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+        }}
+      >
+        <ImageOutlinedIcon sx={{ fontSize: 32, color: "white" }} />
+      </Box>
+    )}
+
+            <Box>
+              <div>
+                <strong>{title}</strong>
+              </div>
+              <div>{creator}</div>
+              {year && <div>{year}</div>}
+            </Box>
+          </Box>
+        )}
 
         {/* a select works with strings, so we store the list id */}
         <select

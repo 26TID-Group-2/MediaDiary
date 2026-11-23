@@ -18,7 +18,7 @@ function toTodo(item) {
     title: item.get("title"),
     creator: item.get("creator") || "",
     releaseYear: item.get("releaseYear") || "",
-    picture: item.get("picture") || "",
+    pictureUrl: item.get("pictureUrl") || "",
     mediaType: item.get("mediaType") || "book",
     status: item.get("status") || "Interested",
     like: Boolean(item.get("like")),
@@ -37,7 +37,6 @@ export async function loadTodos(list) {
 }
 
 export async function addTodo(list, mediaData) {
-  console.log("addTodo received:", mediaData);
   const item = new TodoItem();
 
   item.set("title", mediaData.title || ""); 

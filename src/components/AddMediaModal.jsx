@@ -5,7 +5,7 @@ import { Dialog, DialogTitle, DialogContent } from "@mui/material"; //material u
 import AddMedia from "./AddMedia";
 import {Fab} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-export default function AddMediaModal ({lists}) { // Receive lists as a prop from the parent component, Home and passit down to AddMedia
+export default function AddMediaModal ({lists, onMediaItemAdded}) { // Receive lists as a prop from the parent component, Home and passit down to AddMedia
     const[open, setOpen] = useState(false) // state to track whether the modal is open or closed
 
 
@@ -21,7 +21,7 @@ export default function AddMediaModal ({lists}) { // Receive lists as a prop fro
               right: 24,
               backgroundColor: 'var(--color-primary)',
               color: '#ffffff',
-              '&hover': {
+              '&:hover': {
                 backgroundColor: 'var(--color-primary-dark)',
               },
             }}
@@ -49,7 +49,12 @@ export default function AddMediaModal ({lists}) { // Receive lists as a prop fro
                 </DialogTitle>
 
                 <DialogContent> {/* renders the form inside, passing down the lists and the close function*/}
-                    <AddMedia lists={lists} onClose={() => setOpen(false)} />
+                                        {/* Pass onMediaItemAdded down to AddMedia so Home can update its state */}
+
+                    <AddMedia 
+                    lists={lists} 
+                    onClose={() => setOpen(false)}
+                    onMediaItemAdded={onMediaItemAdded} />
                 </DialogContent>
             </Dialog>
         </>
