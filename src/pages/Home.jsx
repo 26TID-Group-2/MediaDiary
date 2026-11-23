@@ -6,9 +6,7 @@ import { Link } from "react-router-dom";
 
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import sampleMedia from "../data/sampleMedia.js";
 import MediaList from "../components/MediaList.jsx";
-import Box from "@mui/material/Box";
 import AddMediaModal from "../components/AddMediaModal.jsx";
 
 // the home page: every list, by name, each one a link to its own page
@@ -28,12 +26,7 @@ export default function Home({
 
       {lists.map((list) => {
         return (
-          <MediaList
-            key={list.id}
-            listId={list.id}
-            name={list.get("name")}
-            media={sampleMedia}
-          />
+          <MediaList key={list.id} listId={list.id} name={list.get("name")} />
         );
       })}
 
@@ -54,9 +47,7 @@ export default function Home({
         List Manager
       </Typography>
       <AddForm onAdd={onAddList} buttonLabel="New list" />
-      <AddMediaModal
-        lists = {lists}
-          />
+      <AddMediaModal lists={lists} />
       <Typography variant="h5" sx={{ mt: 4 }}>
         Account
       </Typography>

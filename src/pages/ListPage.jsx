@@ -3,10 +3,8 @@ import { Link, useParams } from "react-router-dom";
 import { loadList } from "../services/listService.js";
 import MediaList from "../components/MediaList.jsx";
 import Container from "@mui/material/Container";
-import sampleMedia from "../data/sampleMedia.js";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
 
 export default function ListPage() {
   // the :listId part of the URL, e.g. /lists/Xk3v9QaB2c
@@ -50,7 +48,6 @@ export default function ListPage() {
           key={list.id}
           listId={list.id}
           name={list.get("name")}
-          media={sampleMedia}
           layout="wrap"
         />
       )}

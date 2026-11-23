@@ -15,7 +15,7 @@ const sampleMedia = [
 
     creator: ["Akira Toriyama"], //[] cause it's always a list - even if there's only one creator.
 
-    year: 1984,
+    releaseYear: 1984,
 
     status: "In Progress", //"Interested", "In Progress" or "Finished"
 
@@ -34,7 +34,7 @@ const sampleMedia = [
 
     creator: ["Christopher Nolan"],
 
-    year: 2008,
+    releaseYear: 2008,
 
     status: "Finished",
 
@@ -52,7 +52,7 @@ const sampleMedia = [
 
     creator: ["Marta Kauffman", "David Crane"], //Here the list contains two creators
 
-    year: 1994,
+    releaseYear: 1994,
 
     status: "In Progress",
 
@@ -69,7 +69,7 @@ const sampleMedia = [
 
     creator: ["Michel Gondry"],
 
-    year: 2004,
+    releaseYear: 2004,
 
     status: "In Progress",
 

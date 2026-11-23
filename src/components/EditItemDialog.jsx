@@ -9,43 +9,25 @@ import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import CloseIcon from "@mui/icons-material/Close";
 import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
+import CloseIcon from "@mui/icons-material/Close";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import { STATUSES, typeInfo, unknownTypeInfo } from "../models/mediaConstants";
 
-// Moved here from MediaCard, which no longer uses it.
-const statuses = ["Interested", "In Progress", "Finished"];
+// Edit one item: its status and whether it was liked, or remove it.
+// This component is only rendered while it is open (MediaCard decides that),
+// so the draft state below starts fresh from the item every time.
+export default function EditItemDialog({ item, onClose, onSave, onRemove }) {
+  const { title, type, creator, releaseYear } = item;
+  const { label: typeLabel } = typeInfo[type] ?? unknownTypeInfo;
 
-export default function EditItemDialog({
-  open,
-  onClose,
-  title,
-  type,
-  creator,
-  year,
-  status,
-  onSave,
-  onRemove,
-  liked,
-}) {
-  // The status picked in the dialog. It only becomes "real" on Save.
-  const [selectedStatus, setSelectedStatus] = useState(status);
+  // The draft: changes only become real when the user presses Save.
+  const [selectedStatus, setSelectedStatus] = useState(item.status);
+  const [selectedLiked, setSelectedLiked] = useState(item.liked);
 
-  //Whether the user liked the media or not
-  const [selectedLiked, setSelectedLiked] = useState(liked);
-
-  // Controls the second, smaller "are you sure?" dialog.
+  // Controls smaller "are you sure?" dialog.
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-
-  // Closing without saving throws away the unsaved choice,
-  // so the dialog opens with the real status next time.
-  function handleClose() {
-    setSelectedStatus(status);
-    setSelectedLiked(liked);
-    onClose();
-  }
 
   function handleSave() {
     onSave({ status: selectedStatus, liked: selectedLiked });
@@ -54,15 +36,15 @@ export default function EditItemDialog({
 
   function handleConfirmRemove() {
     setIsConfirmOpen(false);
-    onRemove(); // TODO: real removal once the database is ready
+    onRemove();
     onClose();
   }
 
   return (
     <>
       <Dialog
-        open={open}
-        onClose={handleClose}
+        open
+        onClose={onClose}
         aria-labelledby="edit-item-title"
         fullWidth
         maxWidth="xs"
@@ -71,7 +53,7 @@ export default function EditItemDialog({
           Edit item
           <IconButton
             aria-label="Close"
-            onClick={handleClose}
+            onClick={onClose}
             sx={{ position: "absolute", right: 8, top: 8 }}
           >
             <CloseIcon />
@@ -79,7 +61,7 @@ export default function EditItemDialog({
         </DialogTitle>
 
         <DialogContent>
-          {/* The same details as on the card */}
+          {/* Title and heart on one row */}
           <Box
             sx={{
               display: "flex",
@@ -98,7 +80,7 @@ export default function EditItemDialog({
 
             <Checkbox
               edge="end"
-              checked={selectedLiked}
+              checked={Boolean(selectedLiked)}
               onChange={(e) => setSelectedLiked(e.target.checked)}
               icon={<FavoriteBorderIcon />}
               checkedIcon={<FavoriteIcon />}
@@ -109,6 +91,16 @@ export default function EditItemDialog({
               }}
             />
           </Box>
+
+          {/* The same details as on the card */}
+          <Typography
+            variant="body2"
+            sx={{ color: "var(--color-text-secondary)" }}
+          >
+            {[typeLabel, creator.join(", "), releaseYear]
+              .filter(Boolean)
+              .join(" · ")}
+          </Typography>
 
           {/* Status chips */}
           <Typography
@@ -123,7 +115,7 @@ export default function EditItemDialog({
             aria-labelledby="status-label"
             sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}
           >
-            {statuses.map((option) => {
+            {STATUSES.map((option) => {
               const isSelected = option === selectedStatus;
               return (
                 <Chip
