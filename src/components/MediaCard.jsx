@@ -46,6 +46,9 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
+//custom hook
+import useMenu from "../hooks/useMenu";
+
 // typeInfo connects each media type to its icon and a readable word.
 // The names Book, Movie and TV must be written EXACTLY like the
 // "type" values in sampleMedia.js, otherwise the card cannot find them.
@@ -63,6 +66,8 @@ const statuses = ["Interested", "In Progress", "Finished"];
 //The values inside {} are the PROPS - the information App gives to the card.
 //Writing them like this takes them straight out. That means we can just write year instead of props.year
 function MediaCard({ title, type, creator, year, status, favourite }) {
+  const { menuAnchor, isMenuOpen, handleMenuOpen, handleMenuClose } = useMenu();
+
   //Look up the right icon for this card's type.
   //For example, if the card's type is Movie TypeIcon becomes MovieOutlinedIcon
   const TypeIcon = typeInfo[type].icon;
@@ -79,35 +84,11 @@ function MediaCard({ title, type, creator, year, status, favourite }) {
   // It starts with the status from sampleMedia, for example "Finished".
   const [currentStatus, setCurrentStatus] = useState(status);
 
-  // Which element the menu is attached to.
-  // MUI needs to know WHERE on the screen to open the menu, so we
-  // remember the "..." button that was clicked.
-  // null means "nothing", so the menu starts closed.
-  const [menuAnchor, setMenuAnchor] = useState(null);
-
-  // This is true when the menu should be open, and false when it is closed.
-  // menuAnchor !== null means "menuAnchor is not nothing"
-  const isMenuOpen = menuAnchor !== null;
-
   // This function runs every time the heart is clicked.
   // Calling setIsFavourite saves the new value
   // React then redraws the card, so the other heart is shown.
   function handleFavouriteClick() {
     setIsFavourite(!isFavourite);
-  }
-
-  // Runs when the "..." button is clicked.
-  // React automatically gives the function an "event" object with
-  // information about the click. event.currentTarget is the button
-  // that was clicked. Saving it in state opens the menu next to it.
-  function handleMenuOpen(event) {
-    setMenuAnchor(event.currentTarget);
-  }
-
-  // Runs when the menu should close (clicking outside it or pressing Esc).
-  // Setting the anchor back to null closes the menu.
-  function handleMenuClose() {
-    setMenuAnchor(null);
   }
 
   // Runs when the user picks a status in the menu.

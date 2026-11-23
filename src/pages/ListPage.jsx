@@ -1,38 +1,21 @@
-import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { loadList } from "../services/listService.js";
+import { useParams, Link } from "react-router-dom";
 import MediaList from "../components/MediaList.jsx";
 import Container from "@mui/material/Container";
-import sampleMedia from "../data/sampleMedia.js";
-import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import sampleMedia from "../data/sampleMedia.js";
+import { useList } from "../hooks/useList.js";
 
-export default function ListPage() {
+export default function ListPage({ lists, mediaByList, onAddMedia }) {
   // the :listId part of the URL, e.g. /lists/Xk3v9QaB2c
   const { listId } = useParams();
-
-  const [list, setList] = useState(null);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    async function load() {
-      try {
-        setList(await loadList(listId));
-      } catch (err) {
-        // "Object not found": no such list, or its ACL does not let me read it
-        setError(err.message);
-      }
-    }
-
-    load();
-  }, [listId]);
+  const { list, loading, error } = useList(listId);
 
   return (
     <Container sx={{ py: 3 }}>
       <Button
         component={Link}
-        to="/"
+        to={"/"}
         startIcon={<KeyboardBackspaceIcon />}
         color="primary"
         size="large"
@@ -43,14 +26,17 @@ export default function ListPage() {
 
       {error ? (
         <p>{error}</p>
-      ) : !list ? (
+      ) : loading ? (
         <p>Loading…</p>
       ) : (
         <MediaList
           key={list.id}
+          list={list}
+          lists={lists}
           listId={list.id}
           name={list.get("name")}
-          media={sampleMedia}
+          media={mediaByList[list.id] ?? []}
+          onAddMedia={onAddMedia}
           layout="wrap"
         />
       )}
