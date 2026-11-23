@@ -19,7 +19,10 @@ const sampleMedia = [
 
     status: "In Progress", //"Interested", "In Progress" or "Finished"
 
-    favourite: true, // true = filled heart. false = outlined heart.
+    liked: true, // true = filled heart. false = outlined heart.
+
+    pictureUrl:
+      "https://www.daizex.com/multimedia/images/covers/tankoubon/japanese_03.jpg",
   },
 
   {
@@ -35,7 +38,9 @@ const sampleMedia = [
 
     status: "Finished",
 
-    favourite: false,
+    liked: false,
+
+    pictureUrl: "https://static.posters.cz/image/1300/197743.jpg",
   },
 
   {
@@ -51,7 +56,9 @@ const sampleMedia = [
 
     status: "In Progress",
 
-    favourite: true,
+    liked: true,
+
+    pictureUrl: "https://static.posters.cz/image/1300/133041.jpg",
   },
   {
     id: 4,
@@ -66,7 +73,10 @@ const sampleMedia = [
 
     status: "In Progress",
 
-    favourite: true,
+    liked: true,
+
+    pictureUrl:
+      "https://m.media-amazon.com/images/M/MV5BMTY4NzcwODg3Nl5BMl5BanBnXkFtZTcwNTEwOTMyMw@@._V1_.jpg",
   },
 ];
 

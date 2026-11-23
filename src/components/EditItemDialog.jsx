@@ -10,6 +10,10 @@ import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 // Moved here from MediaCard, which no longer uses it.
 const statuses = ["Interested", "In Progress", "Finished"];
@@ -24,9 +28,14 @@ export default function EditItemDialog({
   status,
   onSave,
   onRemove,
+  liked,
 }) {
   // The status picked in the dialog. It only becomes "real" on Save.
   const [selectedStatus, setSelectedStatus] = useState(status);
+
+  //Whether the user liked the media or not
+  const [selectedLiked, setSelectedLiked] = useState(liked);
+
   // Controls the second, smaller "are you sure?" dialog.
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
@@ -34,11 +43,12 @@ export default function EditItemDialog({
   // so the dialog opens with the real status next time.
   function handleClose() {
     setSelectedStatus(status);
+    setSelectedLiked(liked);
     onClose();
   }
 
   function handleSave() {
-    onSave(selectedStatus);
+    onSave({ status: selectedStatus, liked: selectedLiked });
     onClose();
   }
 
@@ -70,19 +80,35 @@ export default function EditItemDialog({
 
         <DialogContent>
           {/* The same details as on the card */}
-          <Typography
-            variant="h6"
-            component="h3"
-            sx={{ color: "primary.dark" }}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 1,
+            }}
           >
-            {title}
-          </Typography>
-          <Typography
-            variant="body2"
-            sx={{ color: "var(--color-text-secondary)" }}
-          >
-            {type} · {creator.join(", ")} · {year}
-          </Typography>
+            <Typography
+              variant="h6"
+              component="h3"
+              sx={{ color: "primary.dark", minWidth: 0 }}
+            >
+              {title}
+            </Typography>
+
+            <Checkbox
+              edge="end"
+              checked={selectedLiked}
+              onChange={(e) => setSelectedLiked(e.target.checked)}
+              icon={<FavoriteBorderIcon />}
+              checkedIcon={<FavoriteIcon />}
+              inputProps={{ "aria-label": "Liked" }}
+              sx={{
+                color: "var(--color-primary)",
+                "&.Mui-checked": { color: "var(--color-primary)" },
+              }}
+            />
+          </Box>
 
           {/* Status chips */}
           <Typography

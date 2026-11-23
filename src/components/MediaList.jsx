@@ -38,7 +38,8 @@ export default function MediaList({ listId, name, media, layout = "scroll" }) {
               creator={item.creator}
               year={item.year}
               status={item.status}
-              favourite={item.favourite}
+              liked={item.liked}
+              pictureUrl={item.pictureUrl}
             />
           </Box>
         ))}

@@ -8,6 +8,9 @@ import { useState } from "react";
 //Card is the actual white box with rounded corners and a shadow
 import Card from "@mui/material/Card";
 
+//CardMedia = a component for showing pictures/videos at the top of a card
+import CardMedia from "@mui/material/CardMedia";
+
 //CardContent adds padding (white space) around the text inside the Card.
 import CardContent from "@mui/material/CardContent";
 
@@ -34,7 +37,7 @@ import LiveTvOutlinedIcon from "@mui/icons-material/LiveTvOutlined"; //TV icon
 // The image icon used as a placeholder until we have real covers.
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 
-// The two hearts: outlined (not favourite) and filled (favourite).
+// The two hearts: outlined (not Liked) and filled (Liked).
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
@@ -50,7 +53,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 
 //the pop-up dialog for editing item
-import EditItemDialog from "./EditMediaDialog";
+import EditItemDialog from "./EditItemDialog";
 
 // typeInfo connects each media type to its icon and a readable word.
 // The names Book, Movie and TV must be written EXACTLY like the
@@ -70,18 +73,18 @@ const statuses = ["Interested", "In Progress", "Finished"];
 //Writing them like this takes them straight out. That means we can just write year instead of props.year
 
 //TODO: add picture
-function MediaCard({ title, type, creator, year, status, favourite }) {
+function MediaCard({ title, type, creator, year, status, liked, pictureUrl }) {
   //Look up the right icon for this card's type.
   //For example, if the card's type is Movie TypeIcon becomes MovieOutlinedIcon
   const TypeIcon = typeInfo[type].icon;
 
-  // STATE: the card's own memory of whether it is a favourite.
-  // useState(favourite) creates the memory and fills it with the
+  // STATE: the card's own memory of whether it is a Liked.
+  // useState(Liked) creates the memory and fills it with the
   // starting value from the prop (true or false from sampleMedia).
   // It gives us back two things, which we name ourselves:
-  //   isFavourite    -> the current value (true or false)
-  //   setIsFavourite -> the function we call to change the value
-  const [isFavourite, setIsFavourite] = useState(favourite);
+  //   isLiked    -> the current value (true or false)
+  //   setIsLiked -> the function we call to change the value
+  const [isLiked, setIsLiked] = useState(liked);
 
   // The card's own memory of its current status.
   // It starts with the status from sampleMedia, for example "Finished".
@@ -101,11 +104,14 @@ function MediaCard({ title, type, creator, year, status, favourite }) {
   // menuAnchor !== null means "menuAnchor is not nothing"
   const isMenuOpen = menuAnchor !== null;
 
+  const [imageFailed, setImageFailed] = useState(false);
+  const showImage = pictureUrl && !imageFailed;
+
   // This function runs every time the heart is clicked.
-  // Calling setIsFavourite saves the new value
+  // Calling setIsLiked saves the new value
   // React then redraws the card, so the other heart is shown.
-  function handleFavouriteClick() {
-    setIsFavourite(!isFavourite);
+  function handleLikedClick() {
+    setIsLiked(!isLiked);
   }
 
   // Runs when the "..." button is clicked.
@@ -127,6 +133,11 @@ function MediaCard({ title, type, creator, year, status, favourite }) {
     setIsEditOpen(true);
   }
 
+  function handleSave({ status, liked }) {
+    setCurrentStatus(status);
+    setIsLiked(liked);
+  }
+
   function handleAddToListClick() {
     setMenuAnchor(null);
     // TODO: open the add form/dialog
@@ -138,17 +149,28 @@ function MediaCard({ title, type, creator, year, status, favourite }) {
       {/* Cover placeholder: a grey box with an image icon in the middle.
           display: "flex" + alignItems + justifyContent is the standard
           way to centre something both vertically and horizontally. */}
-      <Box
-        sx={{
-          height: 160,
-          bgcolor: "var(--color-grey)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <ImageOutlinedIcon sx={{ fontSize: 48, color: "white" }} />
-      </Box>
+      {showImage ? (
+        <CardMedia
+          component="img"
+          image={pictureUrl}
+          alt=""
+          loading="lazy"
+          onError={() => setImageFailed(true)}
+          sx={{ height: 160, objectFit: "cover", objectPosition: "top" }}
+        />
+      ) : (
+        <Box
+          sx={{
+            height: 160,
+            bgcolor: "var(--color-grey)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ImageOutlinedIcon sx={{ fontSize: 48, color: "white" }} />
+        </Box>
+      )}
 
       <CardContent>
         {/* TOP ROW: text on the left, heart on the right.
@@ -195,33 +217,29 @@ function MediaCard({ title, type, creator, year, status, favourite }) {
           {/* The heart button.
               onClick tells the button which function to run when it is
               clicked (or pressed with Enter or Space on the keyboard).
-              Note: we write handleFavouriteClick WITHOUT ( ), because we
+              Note: we write handleLikedClick WITHOUT ( ), because we
               give the button the function to run later, on click.
               With ( ) it would run immediately when the card is drawn.
 
               aria-label is the text a screen reader reads aloud.
 
               aria-pressed tells a screen reader whether the button is
-              currently "on" (favourite) or "off".
+              currently "on" (Liked) or "off".
 
-              The hearts use isFavourite (the state) instead of the
-              favourite prop, so they change when the user clicks. */}
+              The hearts use isLiked (the state) instead of the
+              Liked prop, so they change when the user clicks. */}
 
-          <IconButton
-            onClick={handleFavouriteClick}
-            aria-pressed={isFavourite}
-            aria-label={
-              isFavourite
-                ? `Remove ${title} from favourites`
-                : `Add ${title} to favourites`
-            }
-          >
-            {isFavourite ? (
-              <FavoriteIcon sx={{ color: "var(--color-primary)" }} />
-            ) : (
-              <FavoriteBorderIcon sx={{ color: "var(--color-primary)" }} />
-            )}
-          </IconButton>
+          {isLiked ? (
+            <FavoriteIcon
+              titleAccess="Liked"
+              sx={{ color: "var(--color-primary)", flexShrink: 0 }}
+            />
+          ) : (
+            <FavoriteBorderIcon
+              titleAccess="Not liked"
+              sx={{ color: "var(--color-primary)", flexShrink: 0 }}
+            />
+          )}
         </Box>
 
         {/* BOTTOM ROW: status tag on the left, "..." on the right.
@@ -273,7 +291,8 @@ function MediaCard({ title, type, creator, year, status, favourite }) {
         creator={creator}
         year={year}
         status={currentStatus}
-        onSave={setCurrentStatus}
+        liked={isLiked}
+        onSave={handleSave}
         onRemove={() => {}}
       />
     </Card>

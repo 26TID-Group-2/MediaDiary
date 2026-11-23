@@ -1,8 +1,8 @@
 import Parse from "./parse.js";
 
 const List = Parse.Object.extend("List");
-const TodoItem = Parse.Object.extend("TodoItem");
-const ListMember = Parse.Object.extend("ListMember");
+const TodoItem = Parse.Object.extend("MediaItem");
+const ListMember = Parse.Object.extend("Contributor");
 
 export async function loadMyLists() {
   return new Parse.Query(List).equalTo("owner", Parse.User.current()).find();
