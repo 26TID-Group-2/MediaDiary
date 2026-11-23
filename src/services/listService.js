@@ -1,7 +1,7 @@
 import Parse from "./parse.js";
 
 const List = Parse.Object.extend("List");
-const TodoItem = Parse.Object.extend("TodoItem");
+const TodoItem = Parse.Object.extend("MediaItem");
 const ListMember = Parse.Object.extend("ListMember");
 
 export async function loadMyLists() {
@@ -31,7 +31,7 @@ export async function addList(name) {
   const list = new List();
   list.set("name", name);
   list.set("owner", currentUser);
-  list.setACL(new Parse.ACL(currentUser)); // only the owner, for now
+  list.setACL(new Parse.ACL(currentUser)); // only the owner, for now (who can read and modify the list)
 
   return list.save();
 }

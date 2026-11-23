@@ -15,6 +15,8 @@ import {
   leaveList,
 } from "./services/listService.js";
 
+import NavAppBar from "./components/NavAppBar.jsx";
+
 function App() {
   const [user, setUser] = useState(currentUser());
   const [lists, setLists] = useState([]);
@@ -77,24 +79,28 @@ function App() {
   }
 
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <Home
-            lists={lists}
-            memberships={memberships}
-            onAddList={handleAddList}
-            onShare={handleShare}
-            onLeave={handleLeave}
-            onLogout={handleLogout}
-          />
-        }
-      />
-      <Route path="/lists/:listId" element={<ListPage />} />
-      <Route path="/profile" element={<ProfilePage />} />
-      <Route path="*" element={<Link to="/">No such page</Link>} />
-    </Routes>
+    <>
+      <NavAppBar onLogout={handleLogout} />
+
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Home
+              lists={lists}
+              memberships={memberships}
+              onAddList={handleAddList}
+              onShare={handleShare}
+              onLeave={handleLeave}
+              onLogout={handleLogout}
+            />
+          }
+        />
+        <Route path="/lists/:listId" element={<ListPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="*" element={<Link to="/">No such page</Link>} />
+      </Routes>
+    </>
   );
 }
 
