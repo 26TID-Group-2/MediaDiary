@@ -34,9 +34,10 @@ function App() {
     loadLists();
   }, [user]); // load again whenever somebody else logs in
 
-  async function handleAddList(name) {
+  //mediaType is "Movie", "TV" or "Book", chosen in AddListCard
+  async function handleAddList(name, mediaType) {
     try {
-      const savedList = await addList(name);
+      const savedList = await addList(name, mediaType);
       setLists([...lists, savedList]);
     } catch (error) {
       alert(error.message);
@@ -97,7 +98,10 @@ function App() {
           }
         />
         <Route path="/lists/:listId" element={<ListPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route
+          path="/profile"
+          element={<ProfilePage onLogout={handleLogout} />}
+        />
         <Route path="*" element={<Link to="/">No such page</Link>} />
       </Routes>
     </>

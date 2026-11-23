@@ -1,8 +1,5 @@
-import AddForm from "../components/AddForm.jsx";
-import MyListRow from "../components/MyListRow.jsx";
 import SharedListRow from "../components/SharedListRow.jsx";
 import AddListCard from "../components/AddListCard.jsx";
-import { Link } from "react-router-dom";
 
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -50,13 +47,15 @@ export default function Home({
         />
       ))}
 
-      <Typography variant="h5" sx={{ mt: 4 }}>
-        List Manager
-      </Typography>
-      <AddForm onAdd={onAddList} buttonLabel="New list" />
-      <AddMediaModal
-        lists = {lists}
-          />
+      {/* The card for creating a new list.
+          onAddList comes from App.jsx, and saves the new list in Parse. */}
+      <Box sx={{ mt: 4 }}>
+        <AddListCard onAddList={onAddList} />
+      </Box>
+
+      {/* The floating + button in the bottom right corner, for adding media to a list */}
+      <AddMediaModal lists={lists} />
+
       <Typography variant="h5" sx={{ mt: 4 }}>
         Account
       </Typography>

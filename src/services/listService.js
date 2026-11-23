@@ -25,11 +25,13 @@ export async function loadList(listId) {
   return new Parse.Query(List).get(listId);
 }
 
-export async function addList(name) {
+//mediaType is "Movie", "TV" or "Book"
+export async function addList(name, mediaType) {
   const currentUser = Parse.User.current();
 
   const list = new List();
   list.set("name", name);
+  list.set("mediaType", mediaType);
   list.set("owner", currentUser);
   list.setACL(new Parse.ACL(currentUser)); // only the owner, for now (who can read and modify the list)
 
