@@ -21,7 +21,7 @@ export default function AddMedia({ lists, onClose, onMediaItemAdded }) { // use 
   // searchResults stores the array of books returned by the Open Library API
   const [searchResults, setSearchResults] = useState([]);
   // like: true = favourite, false = not favourite
-  const [like, setLike] = useState(false);
+  const [liked, setLike] = useState(false);
   // the chosen status; starts as "Interested" so there is always a valid value
   const [currentStatus, setCurrentStatus] = useState("Interested");
   // creator and year come from the book the user picks in the search results
@@ -31,6 +31,8 @@ export default function AddMedia({ lists, onClose, onMediaItemAdded }) { // use 
   const [picture, setPicture] = useState("");
   // media type saved with the item
   const [mediaType, setMediaType] = useState("book");
+
+  // Keep author_name as an array when selecting a book
 
   // async because talking to the database (Back4App) takes time
   async function handleSubmit(event) {
@@ -45,7 +47,7 @@ export default function AddMedia({ lists, onClose, onMediaItemAdded }) { // use 
     }
 
     // temporary: shows what will be saved once the database fields exist
-    console.log(title, creator, year, currentStatus, like);
+    console.log(title, creator, year, currentStatus, liked);
 
     try {
       // await pauses until the database confirms the item is saved
@@ -56,7 +58,7 @@ export default function AddMedia({ lists, onClose, onMediaItemAdded }) { // use 
         pictureUrl: picture,
         mediaType,
         status: currentStatus,
-        like,
+        liked,
       });
       // notify Home that a new item was saved so it appears immediately
 
@@ -105,6 +107,8 @@ export default function AddMedia({ lists, onClose, onMediaItemAdded }) { // use 
 
   // runs when the user clicks a book in the results: fills the form
   function handleSelectBook(book) {
+    setCreator(Array.isArray(book.author_name) ? book.author_name : []);
+
     setTitle(book.title);
     setSearchQuery(book.title)
     setCreator(book.author_name?.join(", ") || "author unknown");
@@ -250,11 +254,11 @@ export default function AddMedia({ lists, onClose, onMediaItemAdded }) { // use 
 
         {/* heart button: toggles the like state */}
         <IconButton
-          onClick={() => setLike(!like)}
-          aria-pressed={like}
-          aria-label={like ? "Remove from favourites" : "Add to favourites"}
+          onClick={() => setLike(!liked)}
+          aria-pressed={liked}
+          aria-label={liked ? "Remove from favourites" : "Add to favourites"}
         >
-          {like ? (
+          {liked ? (
             <FavoriteIcon sx={{ color: "var(--color-primary)" }} />
           ) : (
             <FavoriteBorderIcon sx={{ color: "var(--color-primary)" }} />

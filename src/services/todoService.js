@@ -16,12 +16,16 @@ function toTodo(item) {
   return {
     id: item.id,
     title: item.get("title"),
-    creator: item.get("creator") || "",
+    creator: Array.isArray(item.get("creator"))  // Always return creator as an array for UI components
+    ? item.get("creator")
+    : item.get("creator")
+    ? [String (item.get("creator"))]
+    : [],
     releaseYear: item.get("releaseYear") || "",
     pictureUrl: item.get("pictureUrl") || "",
     mediaType: item.get("mediaType") || "book",
     status: item.get("status") || "Interested",
-    like: Boolean(item.get("like")),
+    liked: Boolean(item.get("liked")),
     done: Boolean(item.get("done")),
     canWrite: canWrite(item),
   };
@@ -37,16 +41,23 @@ export async function loadTodos(list) {
 }
 
 export async function addTodo(list, mediaData) { //R aggiunto mediaData
+
+const creatorArray =
+    Array.isArray(mediaData.creator) && mediaData.creator.length > 0
+      ? mediaData.creator.map((c) => String(c).trim()).filter(Boolean)
+      : typeof mediaData.creator === "string" && mediaData.creator.trim()
+        ? mediaData.creator.split(",").map((c) => c.trim()).filter(Boolean)
+        : ["author unknown"];  
   const item = new TodoItem();
 
   item.set("title", mediaData.title || ""); 
-  item.set("creator", mediaData.creator || "author unknown");
+  item.set("creator", creatorArray.length > 0 ? creatorArray : ["author unknown"]);
   item.set("releaseYear", mediaData.releaseYear ? String(mediaData.releaseYear) : null);
   item.set("pictureUrl", mediaData.pictureUrl || "");
   item.set("mediaType", mediaData.mediaType || "book");
   item.set("status", mediaData.status || "Interested");
-  item.set("like", Boolean(mediaData.like));
-  item.set("done", Boolean(mediaData.false))
+  item.set("liked", Boolean(mediaData.liked));
+  item.set("done",false);
   item.set("list", list);
 
   // the to-do follows its list: whoever may read the list may read the to-do

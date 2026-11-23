@@ -73,6 +73,11 @@ function MediaCard({ title, type, creator, year, status, favourite, picture }) {
 
     const TypeIcon = currentType.icon;
 
+    // Join array entries with a comma for clean display on the card
+const displayCreator = Array.isArray(creator)
+  ? creator.filter(Boolean).join(", ")
+  : creator || "";
+
 
 
   // STATE: the card's own memory of whether it is a favourite.

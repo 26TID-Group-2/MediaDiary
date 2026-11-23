@@ -37,7 +37,7 @@ export default function MediaList({ listId, name, media, layout = "scroll" }) {
               type={item.mediaType} //map back4app mediatype to card type prop
               creator={item.creator}
               year={item.releaseYear}
-              favourite={item.like}
+              favourite={item.liked}
               status={item.status}
               picture={item.pictureUrl}
             />
