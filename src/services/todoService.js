@@ -1,6 +1,6 @@
 import Parse from "./parse.js";
 
-const TodoItem = Parse.Object.extend("MediaItem");
+const TodoItem = Parse.Object.extend("MediaItem"); //R from to TodoItem to MediaItem
 
 // may the current user change this object? asks its ACL
 export function canWrite(parseObject) {
@@ -22,7 +22,7 @@ function toTodo(item) {
     mediaType: item.get("mediaType") || "book",
     status: item.get("status") || "Interested",
     like: Boolean(item.get("like")),
-    done: item.get("done"),
+    done: Boolean(item.get("done")),
     canWrite: canWrite(item),
   };
 }
@@ -36,7 +36,7 @@ export async function loadTodos(list) {
   return results.map(toTodo);
 }
 
-export async function addTodo(list, mediaData) {
+export async function addTodo(list, mediaData) { //R aggiunto mediaData
   const item = new TodoItem();
 
   item.set("title", mediaData.title || ""); 
@@ -46,7 +46,7 @@ export async function addTodo(list, mediaData) {
   item.set("mediaType", mediaData.mediaType || "book");
   item.set("status", mediaData.status || "Interested");
   item.set("like", Boolean(mediaData.like));
-  item.set("done", false);
+  item.set("done", Boolean(mediaData.false))
   item.set("list", list);
 
   // the to-do follows its list: whoever may read the list may read the to-do

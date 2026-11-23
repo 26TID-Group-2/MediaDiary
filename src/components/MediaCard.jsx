@@ -49,10 +49,11 @@ import MenuItem from "@mui/material/MenuItem";
 // typeInfo connects each media type to its icon and a readable word.
 // The names Book, Movie and TV must be written EXACTLY like the
 // "type" values in sampleMedia.js, otherwise the card cannot find them.
+//// Lowercase keys match normalizedType so lookups work regardless of casing
 const typeInfo = {
-  Book: { icon: MenuBookOutlinedIcon, label: "Book" },
-  Movie: { icon: MovieOutlinedIcon, label: "Movie" },
-  TV: { icon: LiveTvOutlinedIcon, label: "TV" },
+  book: { icon: MenuBookOutlinedIcon, label: "Book" },
+  movie: { icon: MovieOutlinedIcon, label: "Movie" },
+  tv: { icon: LiveTvOutlinedIcon, label: "TV" },
 };
 
 //All the statuses a card can have.
@@ -65,9 +66,10 @@ const statuses = ["Interested", "In Progress", "Finished"];
 function MediaCard({ title, type, creator, year, status, favourite, picture }) {
   //Look up the right icon for this card's type.
   //For example, if the card's type is Movie TypeIcon becomes MovieOutlinedIcon
-//normalization to lowercase so both Book and book work
+
+  //normalization to lowercase so both Book and book work
   const normalizedType = typeof type === "string" ? type.toLowerCase() : "";
-  const currentType = typeInfo[normalizedType] || typeInfo.Book;
+  const currentType = typeInfo[normalizedType] || typeInfo.book;
 
     const TypeIcon = currentType.icon;
 
