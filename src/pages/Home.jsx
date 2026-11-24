@@ -3,12 +3,12 @@ import AddForm from "../components/AddForm.jsx";
 import MyListRow from "../components/MyListRow.jsx";
 import SharedListRow from "../components/SharedListRow.jsx";
 import AddListCard from "../components/AddListCard.jsx";
+import { Box } from "@mui/material";
 
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import MediaList from "../components/MediaList.jsx";
 import AddMediaModal from "../components/AddMediaModal.jsx";
-import { loadTodos } from "../services/todoService.js";
 
 // the home page: every list, by name, each one a link to its own page
 export default function Home({
@@ -20,6 +20,8 @@ export default function Home({
   onLogout,
   mediaByList,
   onAddMedia,
+  onSaveMedia,
+  onRemoveMedia,
 }) {
   return (
     <Container sx={{ py: 4 }}>
@@ -30,9 +32,14 @@ export default function Home({
       {lists.map((list) => {
         return (
           <MediaList
+            key={list.id}
             list={list}
             name={list.get("name")}
+            items={mediaByList[list.id] ?? []}
+            lists={lists}
             onAddMedia={onAddMedia}
+            onSave={onSaveMedia}
+            onRemove={onRemoveMedia}
           />
         );
       })}

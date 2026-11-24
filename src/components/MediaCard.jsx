@@ -17,12 +17,13 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import EditItemDialog from "./EditItemDialog";
+import AddMediaDialog from "./AddMediaDialog";
 import { typeInfo, unknownTypeInfo } from "../models/mediaConstants";
 
 // The card gets ONE item and shows it.
 // It does not own the item's data: status and liked come straight from
 // the item, and changes go UP through onSave / onRemove.
-function MediaCard({ item, onSave, onRemove }) {
+function MediaCard({ item, lists, onSave, onRemove, onAddMedia }) {
   const { title, type, creator, releaseYear, status, liked, pictureUrl } = item;
 
   const { icon: TypeIcon, label: typeLabel } =
@@ -30,6 +31,7 @@ function MediaCard({ item, onSave, onRemove }) {
 
   // Only state about how the card LOOKS is kept here:
   const [isEditOpen, setIsEditOpen] = useState(false); // is the edit dialog open?
+  const [isAddToListOpen, setIsAddToListOpen] = useState(false); // is the add-to-list dialog open?
   const [menuAnchor, setMenuAnchor] = useState(null); // which "..." button the menu hangs on (null = closed)
   const [imageFailed, setImageFailed] = useState(false); // did the picture fail to load?
 
@@ -51,7 +53,7 @@ function MediaCard({ item, onSave, onRemove }) {
 
   function handleAddToListClick() {
     setMenuAnchor(null);
-    // TODO: open the add form/dialog
+    setIsAddToListOpen(true);
   }
 
   return (
@@ -181,6 +183,15 @@ function MediaCard({ item, onSave, onRemove }) {
           onRemove={() => onRemove(item.id)}
         />
       )}
+      {/* the same dialog as the + button, but filled in with this item.
+          Not offered: the list the item is already on. */}
+      <AddMediaDialog
+        open={isAddToListOpen}
+        onClose={() => setIsAddToListOpen(false)}
+        lists={lists.filter((list) => list.id !== item.listId)}
+        initialItem={item}
+        onAddMedia={onAddMedia}
+      />
     </Card>
   );
 }

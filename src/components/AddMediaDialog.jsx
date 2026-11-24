@@ -6,6 +6,7 @@ export default function AddMediaDialog({
   onClose,
   lists,
   defaultListId,
+  initialItem,
   onAddMedia,
 }) {
   return (
@@ -28,6 +29,7 @@ export default function AddMediaDialog({
           lists={lists}
           onClose={onClose}
           defaultListId={defaultListId}
+          initialItem={initialItem}
           onAddMedia={onAddMedia}
         />
       </DialogContent>
