@@ -28,7 +28,9 @@ export default function AddMedia({ lists, onClose, onAddMedia, initialItem }) {
   // the chosen status; starts as "Interested" so there is always a valid value
   const [currentStatus, setCurrentStatus] = useState("Interested");
   // creator and year come from the book the user picks in the search results
-  const [creator, setCreator] = useState(initialItem?.creator?.join(", ") ?? "");
+  const [creator, setCreator] = useState(
+    initialItem?.creator?.join(", ") ?? "",
+  );
   const [year, setYear] = useState(initialItem?.releaseYear ?? "");
   // cover image URL for the selected book
   const [picture, setPicture] = useState(initialItem?.pictureUrl ?? "");

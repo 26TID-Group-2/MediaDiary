@@ -1,6 +1,3 @@
-import { useState, useEffect } from "react";
-import AddForm from "../components/AddForm.jsx";
-import MyListRow from "../components/MyListRow.jsx";
 import SharedListRow from "../components/SharedListRow.jsx";
 import AddListCard from "../components/AddListCard.jsx";
 import { Box } from "@mui/material";
