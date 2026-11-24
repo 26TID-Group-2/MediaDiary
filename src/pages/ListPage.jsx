@@ -3,7 +3,6 @@ import MediaList from "../components/MediaList.jsx";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
-import sampleMedia from "../data/sampleMedia.js";
 import { useList } from "../hooks/useList.js";
 
 export default function ListPage({ lists, mediaByList, onAddMedia }) {
@@ -30,10 +29,7 @@ export default function ListPage({ lists, mediaByList, onAddMedia }) {
         <p>Loading…</p>
       ) : (
         <MediaList
-          key={list.id}
           list={list}
-          lists={lists}
-          listId={list.id}
           name={list.get("name")}
           media={mediaByList[list.id] ?? []}
           onAddMedia={onAddMedia}

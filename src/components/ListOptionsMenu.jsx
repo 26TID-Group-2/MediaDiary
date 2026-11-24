@@ -16,7 +16,7 @@ import AddIcon from "@mui/icons-material/Add";
 import AddMediaDialog from "./AddMediaDialog";
 import useMenu from "../hooks/useMenu";
 
-export default function ListOptionsMenu({ list, name, lists, onAddMedia }) {
+export default function ListOptionsMenu({ list, name, onAddMedia }) {
   const { menuAnchor, isMenuOpen, handleMenuOpen, handleMenuClose } = useMenu();
 
   // Remember whether the Add Media dialog is open.
@@ -134,7 +134,7 @@ export default function ListOptionsMenu({ list, name, lists, onAddMedia }) {
       <AddMediaDialog
         open={addMediaOpen}
         onClose={() => setAddMediaOpen(false)}
-        lists={lists}
+        lists={[list]}
         onAddMedia={onAddMedia}
         defaultListId={list.id}
       />
