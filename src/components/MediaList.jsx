@@ -12,7 +12,12 @@ import {
 // One list: its name, and a card for every item in it.
 // It loads and owns its items, so Home (many lists) and ListPage (one list)
 // don't have to know anything about them.
-export default function MediaList({ listId, name, layout = "scroll" }) {
+export default function MediaList({
+  list,
+  name,
+  layout = "scroll",
+  onAddMedia,
+}) {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
@@ -64,7 +69,7 @@ export default function MediaList({ listId, name, layout = "scroll" }) {
       <Typography
         variant="h5"
         component={Link}
-        to={`/lists/${listId}`}
+        to={`/lists/${list.id}`}
         sx={{
           color: "text.primary",
           textDecoration: "none",
@@ -75,6 +80,8 @@ export default function MediaList({ listId, name, layout = "scroll" }) {
       >
         {name}
       </Typography>
+
+      <ListOptionsMenu list={list} name={name} onAddMedia={onAddMedia} />
 
       {items.length === 0 ? (
         <Typography sx={{ py: 2, color: "text.secondary" }}>

@@ -25,11 +25,13 @@ export async function loadList(listId) {
   return new Parse.Query(List).get(listId);
 }
 
-export async function addList(name) {
+//mediaType is "Movie", "TV" or "Book"
+export async function addList(name, mediaType) {
   const currentUser = Parse.User.current();
 
   const list = new List();
   list.set("name", name);
+  list.set("mediaType", mediaType);
   list.set("owner", currentUser);
   list.setACL(new Parse.ACL(currentUser)); // only the owner, for now (who can read and modify the list)
 
@@ -73,4 +75,24 @@ export async function shareList(list, username) {
 // deletes my row; the ACLs on the list and its to-dos still name me
 export async function leaveList(membership) {
   await membership.destroy();
+}
+
+// the owner removes the list, its tasks, and every membership on it
+// added from Mircea's code
+export async function deleteList(list) {
+  const todos = await new Parse.Query(TodoItem).equalTo("list", list).find();
+  const members = await new Parse.Query(ListMember)
+    .equalTo("list", list)
+    .find();
+
+  await Parse.Object.destroyAll([...todos, ...members, list]);
+}
+
+export async function renameList(list, newName) {
+  const name = newName.trim();
+  if (!name) {
+    throw new Error("List name cannot be empty");
+  }
+  list.set("name", name);
+  return list.save();
 }

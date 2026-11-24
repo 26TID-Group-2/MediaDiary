@@ -9,23 +9,10 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Link } from "react-router-dom";
 import Divider from "@mui/material/Divider";
+import useMenu from "../hooks/useMenu";
 
 export default function NavAppBar({ onLogout }) {
-  const [menuAnchor, setMenuAnchor] = useState(null);
-  const isMenuOpen = menuAnchor !== null;
-
-  function handleMenuOpen(event) {
-    setMenuAnchor(event.currentTarget);
-  }
-
-  function handleMenuClose() {
-    setMenuAnchor(null);
-  }
-
-  function handleStatusChange(newStatus) {
-    setCurrentStatus(newStatus);
-    setMenuAnchor(null);
-  }
+  const { menuAnchor, isMenuOpen, handleMenuOpen, handleMenuClose } = useMenu();
 
   return (
     <Box>

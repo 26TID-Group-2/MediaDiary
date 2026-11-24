@@ -1,13 +1,14 @@
+import { useState, useEffect } from "react";
 import AddForm from "../components/AddForm.jsx";
 import MyListRow from "../components/MyListRow.jsx";
 import SharedListRow from "../components/SharedListRow.jsx";
 import AddListCard from "../components/AddListCard.jsx";
-import { Link } from "react-router-dom";
 
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import MediaList from "../components/MediaList.jsx";
 import AddMediaModal from "../components/AddMediaModal.jsx";
+import { loadTodos } from "../services/todoService.js";
 
 // the home page: every list, by name, each one a link to its own page
 export default function Home({
@@ -17,6 +18,8 @@ export default function Home({
   onShare,
   onLeave,
   onLogout,
+  mediaByList,
+  onAddMedia,
 }) {
   return (
     <Container sx={{ py: 4 }}>
@@ -26,7 +29,11 @@ export default function Home({
 
       {lists.map((list) => {
         return (
-          <MediaList key={list.id} listId={list.id} name={list.get("name")} />
+          <MediaList
+            list={list}
+            name={list.get("name")}
+            onAddMedia={onAddMedia}
+          />
         );
       })}
 
@@ -43,11 +50,15 @@ export default function Home({
         />
       ))}
 
-      <Typography variant="h5" sx={{ mt: 4 }}>
-        List Manager
-      </Typography>
-      <AddForm onAdd={onAddList} buttonLabel="New list" />
-      <AddMediaModal lists={lists} />
+      {/* The card for creating a new list.
+          onAddList comes from App.jsx, and saves the new list in Parse. */}
+      <Box sx={{ mt: 4 }}>
+        <AddListCard onAddList={onAddList} />
+      </Box>
+
+      {/* The floating + button in the bottom right corner, for adding media to a list */}
+      <AddMediaModal lists={lists} onMediaItemAdded={onAddMedia} />
+
       <Typography variant="h5" sx={{ mt: 4 }}>
         Account
       </Typography>

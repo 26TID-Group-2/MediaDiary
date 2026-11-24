@@ -34,6 +34,16 @@ import TextField from "@mui/material/TextField";
 //The plus icon
 import AddIcon from "@mui/icons-material/Add";
 
+//ToggleButtonGroup is a row of buttons where only ONE can be chosen at a time.
+//ToggleButton is one button in that row.
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import ToggleButton from "@mui/material/ToggleButton";
+
+//The same icons we use on the MediaCard, one for each media type
+import MovieOutlinedIcon from "@mui/icons-material/MovieOutlined";
+import LiveTvOutlinedIcon from "@mui/icons-material/LiveTvOutlined";
+import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
+
 //onAddList is a PROP: a function the page gives us.
 //We call it with the new name, and the page saves the list in Parse.
 //The card does not talk to Parse itself: the page owns the lists (week 2).
@@ -43,6 +53,11 @@ export default function AddListCard({ onAddList }) {
 
   //STATE 2: the text the user has typed in the field. It starts empty.
   const [name, setName] = useState("");
+
+  //STATE 3: the media type the user has chosen: "Movie", "TV" or "Book".
+  //null means nothing is chosen yet.
+  //The values are written EXACTLY like the types in MediaCard, so they match.
+  const [mediaType, setMediaType] = useState(null);
 
   //Runs when the card is clicked. Setting isOpen to true opens the dialog.
   function handleOpen() {
@@ -55,12 +70,16 @@ export default function AddListCard({ onAddList }) {
     setIsOpen(false);
     //Empty the text field, so it's empty the next time the dialog opens
     setName("");
+    //Also forget the chosen type, so nothing is chosen next time
+    setMediaType(null);
   }
 
   //Runs when the form is submitted: when the user clicks Create or presses Enter.
   function handleSubmit(event) {
     //A form reloads the whole page by default. This stops that.
     event.preventDefault();
+    //Also stop if no media type has been chosen
+    if (mediaType === null) return;
 
     //.trim() removes spaces at the start and end, so "   " does not count as a name.
     const trimmedName = name.trim();
@@ -68,7 +87,7 @@ export default function AddListCard({ onAddList }) {
     if (trimmedName === "") return;
 
     //Give the name to the page, which saves the list in Parse.
-    onAddList(trimmedName);
+    onAddList(trimmedName, mediaType);
     //Close the dialog and empty the field.
     handleClose();
   }
@@ -163,6 +182,56 @@ export default function AddListCard({ onAddList }) {
                   },
               }}
             />
+            <Typography
+              id="media-type-label"
+              variant="body2"
+              sx={{ mt: 2, mb: 1, color: "var(--color-text-secondary)" }}
+            >
+              What will this list contain?
+            </Typography>
+
+            {/* exclusive: only one button can be chosen at a time.
+                value={mediaType}: the button with this value is shown as chosen.
+                onChange gives us the value of the button that was clicked.
+                If the user clicks the chosen button again, MUI gives us null,
+                so we only save the new value when it is not null.
+                aria-labelledby connects the buttons to the heading above,
+                so a screen reader reads "What will this list contain?" first. */}
+            <ToggleButtonGroup
+              exclusive
+              fullWidth
+              value={mediaType}
+              onChange={(event, newType) => {
+                if (newType !== null) setMediaType(newType);
+              }}
+              aria-labelledby="media-type-label"
+              sx={{
+                //All buttons: normal capitalisation ("TV shows", not "TV SHOWS"), on one line
+                "& .MuiToggleButton-root": {
+                  textTransform: "none",
+                  whiteSpace: "nowrap",
+                },
+                //The chosen button gets our light purple background and purple text,
+                //also while the mouse is over it
+                "& .MuiToggleButton-root.Mui-selected, & .MuiToggleButton-root.Mui-selected:hover":
+                  {
+                    bgcolor: "var(--color-background)",
+                    color: "var(--color-primary-dark)",
+                  },
+              }}
+            >
+              {/* Each button has an icon AND a text label,
+                  so the type is never shown with colour or an icon alone. */}
+              <ToggleButton value="MovieTV" sx={{ gap: 1 }}>
+                <MovieOutlinedIcon aria-hidden="true" />
+                <LiveTvOutlinedIcon aria-hidden="true" />
+                Movies & TV
+              </ToggleButton>
+              <ToggleButton value="Book" sx={{ gap: 1 }}>
+                <MenuBookOutlinedIcon aria-hidden="true" />
+                Books
+              </ToggleButton>
+            </ToggleButtonGroup>
           </DialogContent>
 
           {/* The buttons at the bottom of the dialog */}
@@ -183,7 +252,7 @@ export default function AddListCard({ onAddList }) {
             <Button
               type="submit"
               variant="contained"
-              disabled={name.trim() === ""}
+              disabled={name.trim() === "" || mediaType === null}
               sx={{
                 bgcolor: "var(--color-primary)", //Purple button
                 "&:hover": { bgcolor: "var(--color-primary-dark)" }, //Darker purple when hovered
