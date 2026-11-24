@@ -9,7 +9,7 @@ const sampleFriends = [
   { id: "3", username: "johanne" },
   { id: "3", username: "ruta" },
 ];
-export default function FriendsPage({ lists, handleAddFriend }) {
+export default function FriendsPage() {
   return (
     <Container sx={{ py: 4 }}>
       <Typography variant="h4" component="h1">
@@ -21,7 +21,7 @@ export default function FriendsPage({ lists, handleAddFriend }) {
         <Typography variant="h5" component="h2">
           Add a friend
         </Typography>
-        <AddFriendForm onAddFriend={handleAddFriend} />
+        {/* <AddFriendForm onAddFriend={handleAddFriend} /> */}
       </Box>
       {/* Display the user's friends */}
       <Box sx={{ mt: 4 }}>

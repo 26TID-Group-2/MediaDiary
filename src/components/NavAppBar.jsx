@@ -39,12 +39,7 @@ export default function NavAppBar({ onLogout }) {
               My Lists
             </MenuItem>
 
-            <MenuItem
-              disabled
-              component={Link}
-              to="/friends"
-              onClick={handleMenuClose}
-            >
+            <MenuItem component={Link} to="/friends" onClick={handleMenuClose}>
               Friends
             </MenuItem>
 
