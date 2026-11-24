@@ -34,11 +34,12 @@ export default function MediaList({ listId, name, media, layout = "scroll" }) {
           <Box key={item.id} sx={{ flexShrink: 0 }}>
             <MediaCard
               title={item.title}
-              type={item.type}
+              type={item.mediaType} //map back4app mediatype to card type prop
               creator={item.creator}
-              year={item.year}
+              year={item.releaseYear}
+              favourite={item.liked}
               status={item.status}
-              favourite={item.favourite}
+              picture={item.pictureUrl}
             />
           </Box>
         ))}

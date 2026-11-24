@@ -47,8 +47,8 @@ export default function AuthPage({ onAuthenticated }) {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button onClick={handleSignUp}>Sign Up</button>
         <button onClick={handleLogin}>Log In</button>
+        <button onClick={handleSignUp}>Sign Up</button>
       </form>
     </div>
   );
