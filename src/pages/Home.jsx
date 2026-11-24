@@ -20,32 +20,9 @@ export default function Home({
   onShare,
   onLeave,
   onLogout,
+  mediaByList,
+  onAddMedia,
 }) {
-
-  const [mediaByList, setMediaByList] = useState({});
-
-  //loeads the media items already in the database when lists load or change
-  useEffect(() => {
-    async function fetchMedia() {
-      const nextMediaByList = {};
-      for (const list of lists) {
-        nextMediaByList[list.id] = await loadTodos(list);
-      }
-      setMediaByList(nextMediaByList);
-    }
-
-    fetchMedia();
-  }, [lists]);
-
-
-  // Links the newly saved media item to the matching list
-  function handleMediaItemAdded(listId, savedMediaItem) {
-    setMediaByList((prev) => ({
-      ...prev,
-      [listId]: [...(prev[listId] || []), savedMediaItem],
-    }));
-  }
-
   return (
     <Container sx={{ py: 4 }}>
       <Typography variant="h4" component="h1">
@@ -56,9 +33,12 @@ export default function Home({
         return (
           <MediaList
             key={list.id}
+            list={list}
+            lists={lists}
             listId={list.id}
             name={list.get("name")}
-            media={mediaByList[list.id] || []}
+            media={mediaByList[list.id] ?? []}
+            onAddMedia={onAddMedia}
           />
         );
       })}
@@ -83,7 +63,7 @@ export default function Home({
       </Box>
 
       {/* The floating + button in the bottom right corner, for adding media to a list */}
-      <AddMediaModal lists={lists} onMediaItemAdded={handleMediaItemAdded} />
+      <AddMediaModal lists={lists} onMediaItemAdded={onAddMedia} />
 
       <Typography variant="h5" sx={{ mt: 4 }}>
         Account

@@ -2,14 +2,21 @@ import MediaCard from "./MediaCard";
 import { Box } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
+import ListOptionsMenu from "./ListOptionsMenu";
 
-export default function MediaList({ listId, name, media, layout = "scroll" }) {
+export default function MediaList({
+  list,
+  name,
+  media,
+  onAddMedia,
+  layout = "scroll",
+}) {
   return (
     <Box sx={{ mt: 4 }}>
       <Typography
         variant="h5"
         component={Link}
-        to={`/lists/${listId}`}
+        to={`/lists/${list.id}`}
         sx={{
           color: "text.primary",
           textDecoration: "none",
@@ -20,6 +27,8 @@ export default function MediaList({ listId, name, media, layout = "scroll" }) {
       >
         {name}
       </Typography>
+
+      <ListOptionsMenu list={list} name={name} onAddMedia={onAddMedia} />
 
       <Box
         sx={{

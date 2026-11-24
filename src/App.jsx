@@ -2,6 +2,7 @@ import "./styling/App.css";
 import Home from "./pages/Home.jsx";
 import ListPage from "./pages/ListPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
+import FriendsPage from "./pages/FriendsPage.jsx";
 import { Link, Route, Routes } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -14,6 +15,7 @@ import {
   shareList,
   leaveList,
 } from "./services/listService.js";
+import { loadTodos } from "./services/todoService.js";
 
 import NavAppBar from "./components/NavAppBar.jsx";
 
@@ -21,6 +23,20 @@ function App() {
   const [user, setUser] = useState(currentUser());
   const [lists, setLists] = useState([]);
   const [memberships, setMemberships] = useState([]);
+  const [mediaByList, setMediaByList] = useState({});
+
+  //loeads the media items already in the database when lists load or change
+  useEffect(() => {
+    async function fetchMedia() {
+      const nextMediaByList = {};
+      for (const list of lists) {
+        nextMediaByList[list.id] = await loadTodos(list);
+      }
+      setMediaByList(nextMediaByList);
+    }
+
+    fetchMedia();
+  }, [lists]);
 
   useEffect(() => {
     // nobody logged in yet: nothing to load
@@ -75,6 +91,14 @@ function App() {
     setUser(loggedInUser);
   }
 
+  function handleAddMedia(listId, savedMediaItem) {
+    setMediaByList((previous) => ({
+      ...previous,
+
+      [listId]: [...(previous[listId] ?? []), savedMediaItem],
+    }));
+  }
+
   if (!user) {
     return <AuthPage onAuthenticated={handleAuthenticated} />;
   }
@@ -94,14 +118,26 @@ function App() {
               onShare={handleShare}
               onLeave={handleLeave}
               onLogout={handleLogout}
+              mediaByList={mediaByList}
+              onAddMedia={handleAddMedia}
             />
           }
         />
-        <Route path="/lists/:listId" element={<ListPage />} />
+        <Route
+          path="/lists/:listId"
+          element={
+            <ListPage
+              lists={lists}
+              mediaByList={mediaByList}
+              onAddMedia={handleAddMedia}
+            />
+          }
+        />
         <Route
           path="/profile"
           element={<ProfilePage onLogout={handleLogout} />}
         />
+        <Route path="/friends" element={<FriendsPage />} />
         <Route path="*" element={<Link to="/">No such page</Link>} />
       </Routes>
     </>
