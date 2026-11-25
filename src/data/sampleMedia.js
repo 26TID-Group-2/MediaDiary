@@ -15,11 +15,14 @@ const sampleMedia = [
 
     creator: ["Akira Toriyama"], //[] cause it's always a list - even if there's only one creator.
 
-    year: 1984,
+    releaseYear: 1984,
 
     status: "In Progress", //"Interested", "In Progress" or "Finished"
 
-    favourite: true, // true = filled heart. false = outlined heart.
+    liked: true, // true = filled heart. false = outlined heart.
+
+    pictureUrl:
+      "https://www.daizex.com/multimedia/images/covers/tankoubon/japanese_03.jpg",
   },
 
   {
@@ -31,11 +34,13 @@ const sampleMedia = [
 
     creator: ["Christopher Nolan"],
 
-    year: 2008,
+    releaseYear: 2008,
 
     status: "Finished",
 
-    favourite: false,
+    liked: false,
+
+    pictureUrl: "https://static.posters.cz/image/1300/197743.jpg",
   },
 
   {
@@ -47,11 +52,31 @@ const sampleMedia = [
 
     creator: ["Marta Kauffman", "David Crane"], //Here the list contains two creators
 
-    year: 1994,
+    releaseYear: 1994,
 
     status: "In Progress",
 
-    favourite: true,
+    liked: true,
+
+    pictureUrl: "https://static.posters.cz/image/1300/133041.jpg",
+  },
+  {
+    id: 4,
+
+    type: "Movie",
+
+    title: "Eternal Sunshine of the Spotless Mind", //trying a long title
+
+    creator: ["Michel Gondry"],
+
+    releaseYear: 2004,
+
+    status: "In Progress",
+
+    liked: true,
+
+    pictureUrl:
+      "https://m.media-amazon.com/images/M/MV5BMTY4NzcwODg3Nl5BMl5BanBnXkFtZTcwNTEwOTMyMw@@._V1_.jpg",
   },
 ];
 

@@ -222,7 +222,7 @@ export default function AddListCard({ onAddList }) {
             >
               {/* Each button has an icon AND a text label,
                   so the type is never shown with colour or an icon alone. */}
-              <ToggleButton value="MovieTV" sx={{ gap: 1 }}>
+              <ToggleButton disabled value="MovieTV" sx={{ gap: 1 }}>
                 <MovieOutlinedIcon aria-hidden="true" />
                 <LiveTvOutlinedIcon aria-hidden="true" />
                 Movies & TV

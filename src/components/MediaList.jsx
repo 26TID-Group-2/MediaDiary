@@ -1,16 +1,21 @@
 import MediaCard from "./MediaCard";
+import ListOptionsMenu from "./ListOptionsMenu";
 import { Box } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
-import ListOptionsMenu from "./ListOptionsMenu";
 
+// One list: its name, and a card for every item in it.
+// It only shows what it is given: the items live in App (useMediaItems).
 export default function MediaList({
   list,
   lists,
   name,
-  media,
-  onAddMedia,
+  items,
+  lists, // all my lists: the choices for "Add to list"
   layout = "scroll",
+  onAddMedia,
+  onSave,
+  onRemove,
 }) {
   return (
     <Box sx={{ mt: 4 }}>
@@ -36,29 +41,33 @@ export default function MediaList({
         onAddMedia={onAddMedia}
       />
 
-      <Box
-        sx={{
-          display: "flex",
-          gap: 3,
-          flexWrap: layout === "wrap" ? "wrap" : "nowrap",
-          overflowX: layout === "wrap" ? "visible" : "auto",
-          py: 2,
-        }}
-      >
-        {media.map((item) => (
-          <Box key={item.id} sx={{ flexShrink: 0 }}>
-            <MediaCard
-              title={item.title}
-              type={item.mediaType} //map back4app mediatype to card type prop
-              creator={item.creator}
-              year={item.releaseYear}
-              favourite={item.liked}
-              status={item.status}
-              picture={item.pictureUrl}
-            />
-          </Box>
-        ))}
-      </Box>
+      {items.length === 0 ? (
+        <Typography sx={{ py: 2, color: "text.secondary" }}>
+          Nothing on this list yet.
+        </Typography>
+      ) : (
+        <Box
+          sx={{
+            display: "flex",
+            gap: 3,
+            flexWrap: layout === "wrap" ? "wrap" : "nowrap",
+            overflowX: layout === "wrap" ? "visible" : "auto",
+            py: 2,
+          }}
+        >
+          {items.map((item) => (
+            <Box key={item.id} sx={{ flexShrink: 0 }}>
+              <MediaCard
+                item={item}
+                lists={lists}
+                onSave={onSave}
+                onRemove={onRemove}
+                onAddMedia={onAddMedia}
+              />
+            </Box>
+          ))}
+        </Box>
+      )}
     </Box>
   );
 }

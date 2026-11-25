@@ -1,6 +1,6 @@
 import { useState } from "react";
 import TextInput from "./TextInput";
-import { addTodo } from "../services/todoService";
+import { addMediaItem } from "../services/mediaService";
 import { searchBooks } from "../services/bookService";
 import IconButton from "@mui/material/IconButton";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -14,14 +14,15 @@ const statuses = ["Interested", "In Progress", "Finished"]; // the possible stat
 export default function AddMedia({
   lists,
   onClose,
-  onMediaItemAdded,
+  onAddMedia,
+  initialItem,
   defaultListId,
 }) {
   // use OnMediaItemAdded so the parent can update the list
   // stores what the user types
   const [searchQuery, setSearchQuery] = useState("");
   // title stores the title of the selected media
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState(initialItem?.title ?? "");
   // selectedListId stores the id of the list chosen in the dropdown menu
   const [selectedListId, setSelectedListId] = useState(defaultListId);
   // searchResults stores the array of books returned by the Open Library API
@@ -31,12 +32,14 @@ export default function AddMedia({
   // the chosen status; starts as "Interested" so there is always a valid value
   const [currentStatus, setCurrentStatus] = useState("Interested");
   // creator and year come from the book the user picks in the search results
-  const [creator, setCreator] = useState("");
-  const [year, setYear] = useState("");
+  const [creator, setCreator] = useState(
+    initialItem?.creator?.join(", ") ?? "",
+  );
+  const [year, setYear] = useState(initialItem?.releaseYear ?? "");
   // cover image URL for the selected book
-  const [picture, setPicture] = useState("");
+  const [picture, setPicture] = useState(initialItem?.pictureUrl ?? "");
   // media type saved with the item
-  const [mediaType, setMediaType] = useState("book");
+  const [mediaType, setMediaType] = useState(initialItem?.type ?? "Book");
 
   // Keep author_name as an array when selecting a book
 
@@ -57,19 +60,21 @@ export default function AddMedia({
 
     try {
       // await pauses until the database confirms the item is saved
-      const savedItem = await addTodo(matchingList, {
+      const savedItem = await addMediaItem(matchingList.id, {
         title: title.trim(),
-        creator: creator.trim() || "author unknown",
-        releaseYear: year,
+        // the form shows creators as one text; the database wants an array
+        creator:
+          creator && creator !== "author unknown" ? creator.split(", ") : [],
+        releaseYear: year ? String(year) : "", // the column is a String
         pictureUrl: picture,
-        mediaType,
+        type: mediaType,
         status: currentStatus,
         liked,
       });
       // notify Home that a new item was saved so it appears immediately
 
-      if (onMediaItemAdded) {
-        onMediaItemAdded(matchingList.id, savedItem);
+      if (onAddMedia) {
+        onAddMedia(matchingList.id, savedItem);
       }
 
       alert(`${title} was successfully added to the list!`);
@@ -84,7 +89,7 @@ export default function AddMedia({
       setLike(false);
       setCurrentStatus("Interested");
       setPicture("");
-      setMediaType("book");
+      setMediaType("Book");
 
       if (onClose) {
         onClose(); // closes the modal
@@ -120,7 +125,7 @@ export default function AddMedia({
     setCreator(book.author_name?.join(", ") || "author unknown");
     setYear(book.first_publish_year || "");
     setPicture(getCoverUrl(book.cover_i));
-    setMediaType("book");
+    setMediaType("Book");
 
     // hides the search results
     setSearchResults([]);

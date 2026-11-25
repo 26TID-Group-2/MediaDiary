@@ -15,28 +15,23 @@ import {
   shareList,
   leaveList,
 } from "./services/listService.js";
-import { loadTodos } from "./services/todoService.js";
 
 import NavAppBar from "./components/NavAppBar.jsx";
+import { useMediaItems } from "./hooks/useMediaItems.js";
 
 function App() {
   const [user, setUser] = useState(currentUser());
   const [lists, setLists] = useState([]);
   const [memberships, setMemberships] = useState([]);
-  const [mediaByList, setMediaByList] = useState({});
-
-  //loeads the media items already in the database when lists load or change
-  useEffect(() => {
-    async function fetchMedia() {
-      const nextMediaByList = {};
-      for (const list of lists) {
-        nextMediaByList[list.id] = await loadTodos(list);
-      }
-      setMediaByList(nextMediaByList);
-    }
-
-    fetchMedia();
-  }, [lists]);
+  // The media items of all lists live here, in one place.
+  const {
+    mediaByList,
+    loadMedia,
+    resetMedia,
+    handleAddMedia,
+    handleSaveMedia,
+    handleRemoveMedia,
+  } = useMediaItems(user, lists);
 
   useEffect(() => {
     // nobody logged in yet: nothing to load
@@ -81,6 +76,7 @@ function App() {
   async function handleLogout() {
     try {
       await logOut();
+      resetMedia();
       setUser(null);
     } catch (error) {
       alert(error);
@@ -89,14 +85,6 @@ function App() {
 
   function handleAuthenticated(loggedInUser) {
     setUser(loggedInUser);
-  }
-
-  function handleAddMedia(listId, savedMediaItem) {
-    setMediaByList((previous) => ({
-      ...previous,
-
-      [listId]: [...(previous[listId] ?? []), savedMediaItem],
-    }));
   }
 
   if (!user) {
@@ -120,6 +108,8 @@ function App() {
               onLogout={handleLogout}
               mediaByList={mediaByList}
               onAddMedia={handleAddMedia}
+              onSaveMedia={handleSaveMedia}
+              onRemoveMedia={handleRemoveMedia}
             />
           }
         />
@@ -129,7 +119,10 @@ function App() {
             <ListPage
               lists={lists}
               mediaByList={mediaByList}
+              onLoadMedia={loadMedia}
               onAddMedia={handleAddMedia}
+              onSaveMedia={handleSaveMedia}
+              onRemoveMedia={handleRemoveMedia}
             />
           }
         />

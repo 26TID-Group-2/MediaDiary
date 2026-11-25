@@ -1,8 +1,8 @@
 import Parse from "./parse.js";
 
 const List = Parse.Object.extend("List");
-const TodoItem = Parse.Object.extend("MediaItem");
-const ListMember = Parse.Object.extend("Contributer");
+const MediaItem = Parse.Object.extend("MediaItem");
+const ListMember = Parse.Object.extend("Contributor");
 
 export async function loadMyLists() {
   return new Parse.Query(List).equalTo("owner", Parse.User.current()).find();
@@ -52,8 +52,10 @@ export async function shareList(list, username) {
   acl.setReadAccess(friend, true); // may read, not change
   list.setACL(acl);
 
-  const todos = await new Parse.Query(TodoItem).equalTo("list", list).find();
-  todos.forEach((todo) => todo.setACL(acl));
+  const mediaItems = await new Parse.Query(MediaItem)
+    .equalTo("list", list)
+    .find();
+  mediaItems.forEach((item) => item.setACL(acl));
 
   // 2. the data: a row that says the friend is on the list
   const member = new ListMember();
@@ -67,7 +69,7 @@ export async function shareList(list, username) {
   member.setACL(memberAcl);
 
   // one request, but not a transaction: if it fails halfway, they disagree
-  await Parse.Object.saveAll([list, ...todos, member]);
+  await Parse.Object.saveAll([list, ...mediaItems, member]);
 }
 
 // deletes my row; the ACLs on the list and its to-dos still name me
@@ -78,12 +80,14 @@ export async function leaveList(membership) {
 // the owner removes the list, its tasks, and every membership on it
 // added from Mircea's code
 export async function deleteList(list) {
-  const todos = await new Parse.Query(TodoItem).equalTo("list", list).find();
+  const mediaItems = await new Parse.Query(MediaItem)
+    .equalTo("list", list)
+    .find();
   const members = await new Parse.Query(ListMember)
     .equalTo("list", list)
     .find();
 
-  await Parse.Object.destroyAll([...todos, ...members, list]);
+  await Parse.Object.destroyAll([...mediaItems, ...members, list]);
 }
 
 export async function renameList(list, newName) {
