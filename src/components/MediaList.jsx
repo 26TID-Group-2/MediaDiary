@@ -6,6 +6,7 @@ import ListOptionsMenu from "./ListOptionsMenu";
 
 export default function MediaList({
   list,
+  lists,
   name,
   media,
   onAddMedia,
@@ -28,7 +29,12 @@ export default function MediaList({
         {name}
       </Typography>
 
-      <ListOptionsMenu list={list} name={name} onAddMedia={onAddMedia} />
+      <ListOptionsMenu
+        list={list}
+        lists={lists}
+        name={name}
+        onAddMedia={onAddMedia}
+      />
 
       <Box
         sx={{

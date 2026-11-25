@@ -11,13 +11,19 @@ import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 
 const statuses = ["Interested", "In Progress", "Finished"]; // the possible statuses; it never changes, so it lives outside the component
 
-export default function AddMedia({ lists, onClose, onMediaItemAdded }) { // use OnMediaItemAdded so the parent can update the list 
-// stores what the user types 
-  const [searchQuery, setSearchQuery] = useState("");  
+export default function AddMedia({
+  lists,
+  onClose,
+  onMediaItemAdded,
+  defaultListId,
+}) {
+  // use OnMediaItemAdded so the parent can update the list
+  // stores what the user types
+  const [searchQuery, setSearchQuery] = useState("");
   // title stores the title of the selected media
   const [title, setTitle] = useState("");
   // selectedListId stores the id of the list chosen in the dropdown menu
-  const [selectedListId, setSelectedListId] = useState("");
+  const [selectedListId, setSelectedListId] = useState(defaultListId);
   // searchResults stores the array of books returned by the Open Library API
   const [searchResults, setSearchResults] = useState([]);
   // like: true = favourite, false = not favourite
@@ -110,7 +116,7 @@ export default function AddMedia({ lists, onClose, onMediaItemAdded }) { // use 
     setCreator(Array.isArray(book.author_name) ? book.author_name : []);
 
     setTitle(book.title);
-    setSearchQuery(book.title)
+    setSearchQuery(book.title);
     setCreator(book.author_name?.join(", ") || "author unknown");
     setYear(book.first_publish_year || "");
     setPicture(getCoverUrl(book.cover_i));
@@ -126,21 +132,25 @@ export default function AddMedia({ lists, onClose, onMediaItemAdded }) { // use 
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {/* title field and search button side by side */}
         <Box sx={{ display: "flex", gap: 1 }}>
-          <TextInput 
-          value={searchQuery} 
-          onChange={(newValue) => {
-            setSearchQuery(newValue);
-            setSearchResults([]); 
+          <TextInput
+            value={searchQuery}
+            onChange={(newValue) => {
+              setSearchQuery(newValue);
+              setSearchResults([]);
 
-            
-            if(title) {
+              if (title) {
                 setTitle("");
                 setCreator("");
                 setYear("");
                 setPicture("");
-            }
-           }} />
-          <button type="button" onClick={handleSearch} disabled={!searchQuery.trim()}>
+              }
+            }}
+          />
+          <button
+            type="button"
+            onClick={handleSearch}
+            disabled={!searchQuery.trim()}
+          >
             Search
           </button>
         </Box>
@@ -155,13 +165,24 @@ export default function AddMedia({ lists, onClose, onMediaItemAdded }) { // use 
               type="button" // so it does not submit the form
               key={book.key} // unique id from Open Library, tells the books apart
               onClick={() => handleSelectBook(book)}
-              style={{ display: "flex", alignItems: "center", gap: 10, textAlign: "left" }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                textAlign: "left",
+              }}
             >
               {coverUrl ? (
                 <img
                   src={coverUrl}
                   alt={book.title}
-                  style={{ width: 36, height: 54, objectFit: "cover", borderRadius: 4, flexShrink: 0 }}
+                  style={{
+                    width: 36,
+                    height: 54,
+                    objectFit: "cover",
+                    borderRadius: 4,
+                    flexShrink: 0,
+                  }}
                 />
               ) : (
                 <Box
@@ -188,34 +209,39 @@ export default function AddMedia({ lists, onClose, onMediaItemAdded }) { // use 
               </span>
             </button>
           );
-        })}       
+        })}
 
         {title && (
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}> {/* shows default image when cover picture is undefined */}
-           {picture ? (
-
-            <img
-              src={picture}
-              alt={title || "Book cover"}
-              style={{ width: 64, height: 96, objectFit: "cover", borderRadius: 6 }}
-            />
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            {" "}
+            {/* shows default image when cover picture is undefined */}
+            {picture ? (
+              <img
+                src={picture}
+                alt={title || "Book cover"}
+                style={{
+                  width: 64,
+                  height: 96,
+                  objectFit: "cover",
+                  borderRadius: 6,
+                }}
+              />
             ) : (
-                <Box
-        sx={{
-          width: 64,
-          height: 96,
-          borderRadius: "6px",
-          bgcolor: "var(--color-grey)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-        }}
-      >
-        <ImageOutlinedIcon sx={{ fontSize: 32, color: "white" }} />
-      </Box>
-    )}
-
+              <Box
+                sx={{
+                  width: 64,
+                  height: 96,
+                  borderRadius: "6px",
+                  bgcolor: "var(--color-grey)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <ImageOutlinedIcon sx={{ fontSize: 32, color: "white" }} />
+              </Box>
+            )}
             <Box>
               <div>
                 <strong>{title}</strong>

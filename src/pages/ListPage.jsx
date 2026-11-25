@@ -30,6 +30,7 @@ export default function ListPage({ lists, mediaByList, onAddMedia }) {
       ) : (
         <MediaList
           list={list}
+          lists={lists}
           name={list.get("name")}
           media={mediaByList[list.id] ?? []}
           onAddMedia={onAddMedia}
