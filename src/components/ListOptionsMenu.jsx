@@ -3,7 +3,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { useState } from "react";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import IconButton from "@mui/material/IconButton";
-import { renameList } from "../services/listService";
+import { renameList, deleteList } from "../services/listService";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -15,41 +15,43 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import AddMediaDialog from "./AddMediaDialog";
 import useMenu from "../hooks/useMenu";
+import DialogContentText from "@mui/material/DialogContentText";
 
 export default function ListOptionsMenu({ list, lists, name, onAddMedia }) {
   const { menuAnchor, isMenuOpen, handleMenuOpen, handleMenuClose } = useMenu();
 
-  // Remember whether the Add Media dialog is open.
   const [addMediaOpen, setAddMediaOpen] = useState(false);
-
-  // Runs when the user clicks Add media.
-  function handleAddMediaOpen() {
-    // Close the three-dot menu first.
-    handleMenuClose();
-
-    // Open the Add Media dialog.
-    setAddMediaOpen(true);
-  }
-
-  // Remember whether the rename dialog is open.
   const [renameOpen, setRenameOpen] = useState(false);
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
 
   // Remember what the user types as the new list name.
   const [newName, setNewName] = useState(name);
+
+  const [isSaving, setIsSaving] = useState(false);
+
+  function handleAddMediaOpen() {
+    handleMenuClose();
+    setAddMediaOpen(true);
+  }
 
   function handleRenameOpen() {
     // Fill the input with the current list name.
     setNewName(name);
 
-    // Close the three-dot menu.
     handleMenuClose();
-
-    // Open the rename dialog.
     setRenameOpen(true);
   }
 
-  // Remember whether the rename is currently being saved.
-  const [isSaving, setIsSaving] = useState(false);
+  function handleConfirmationOpen() {
+    handleMenuClose();
+    setConfirmationOpen(true);
+  }
+
+  function handleConfirmDelete() {
+    setConfirmationOpen(false);
+    deleteList(list);
+    handleMenuClose();
+  }
 
   // Runs when the user clicks Save.
   async function handleRenameSave() {
@@ -90,7 +92,7 @@ export default function ListOptionsMenu({ list, lists, name, onAddMedia }) {
           <EditIcon sx={{ mr: 1 }} />
           Rename list
         </MenuItem>
-        <MenuItem disabled>
+        <MenuItem onClick={handleConfirmationOpen}>
           <DeleteIcon sx={{ mr: 1 }} />
           Delete list
         </MenuItem>
@@ -138,6 +140,18 @@ export default function ListOptionsMenu({ list, lists, name, onAddMedia }) {
         defaultListId={list.id}
         onAddMedia={onAddMedia}
       />
+      <Dialog open={confirmationOpen} onClose={() => confirmationOpen(false)}>
+        <DialogTitle>Delete list?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>"{name}" will be deleted.</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmationOpen(false)}>Cancel</Button>
+          <Button color="error" onClick={handleConfirmDelete}>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
