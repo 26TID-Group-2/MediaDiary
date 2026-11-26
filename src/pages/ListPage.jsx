@@ -43,7 +43,6 @@ export default function ListPage({
       ) : (
         <MediaList
           list={list}
-          lists={lists}
           name={list.get("name")}
           items={mediaByList[list.id] ?? []}
           lists={lists}
