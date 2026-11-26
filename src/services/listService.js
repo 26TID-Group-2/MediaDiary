@@ -83,11 +83,12 @@ export async function deleteList(list) {
   const mediaItems = await new Parse.Query(MediaItem)
     .equalTo("list", list)
     .find();
-  const members = await new Parse.Query(ListMember)
-    .equalTo("list", list)
-    .find();
+  // const members = await new Parse.Query(ListMember)
+  //   .equalTo("list", list)
+  //   .find();
 
-  await Parse.Object.destroyAll([...mediaItems, ...members, list]);
+  await Parse.Object.destroyAll([...mediaItems, list]);
+  // ...members,
 }
 
 export async function renameList(list, newName) {
