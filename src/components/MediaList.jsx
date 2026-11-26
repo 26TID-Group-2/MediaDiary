@@ -8,7 +8,6 @@ import { Link } from "react-router-dom";
 // It only shows what it is given: the items live in App (useMediaItems).
 export default function MediaList({
   list,
-  lists,
   name,
   items,
   lists, // all my lists: the choices for "Add to list"
