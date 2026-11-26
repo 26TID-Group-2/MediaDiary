@@ -110,6 +110,7 @@ function App() {
               onAddMedia={handleAddMedia}
               onSaveMedia={handleSaveMedia}
               onRemoveMedia={handleRemoveMedia}
+              setLists={setLists}
             />
           }
         />
@@ -123,6 +124,7 @@ function App() {
               onAddMedia={handleAddMedia}
               onSaveMedia={handleSaveMedia}
               onRemoveMedia={handleRemoveMedia}
+              setLists={setLists}
             />
           }
         />

@@ -13,6 +13,7 @@ export default function ListPage({
   onAddMedia,
   onSaveMedia,
   onRemoveMedia,
+  setLists,
 }) {
   // the :listId part of the URL, e.g. /lists/Xk3v9QaB2c
   const { listId } = useParams();
@@ -43,13 +44,13 @@ export default function ListPage({
       ) : (
         <MediaList
           list={list}
-          name={list.get("name")}
           items={mediaByList[list.id] ?? []}
           lists={lists}
           onAddMedia={onAddMedia}
           onSave={onSaveMedia}
           onRemove={onRemoveMedia}
           layout="wrap"
+          setLists={setLists}
         />
       )}
     </Container>

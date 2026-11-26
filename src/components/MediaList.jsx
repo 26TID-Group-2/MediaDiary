@@ -8,14 +8,15 @@ import { Link } from "react-router-dom";
 // It only shows what it is given: the items live in App (useMediaItems).
 export default function MediaList({
   list,
-  name,
   items,
   lists, // all my lists: the choices for "Add to list"
   layout = "scroll",
   onAddMedia,
   onSave,
   onRemove,
+  setLists,
 }) {
+  const name = list.get("name") ?? "";
   return (
     <Box sx={{ mt: 4 }}>
       <Typography
@@ -36,8 +37,8 @@ export default function MediaList({
       <ListOptionsMenu
         list={list}
         lists={lists}
-        name={name}
         onAddMedia={onAddMedia}
+        setLists={setLists}
       />
 
       {items.length === 0 ? (

@@ -19,6 +19,7 @@ export default function Home({
   onAddMedia,
   onSaveMedia,
   onRemoveMedia,
+  setLists,
 }) {
   return (
     <Container sx={{ py: 4 }}>
@@ -31,12 +32,12 @@ export default function Home({
           <MediaList
             key={list.id}
             list={list}
-            name={list.get("name")}
             items={mediaByList[list.id] ?? []}
             lists={lists}
             onAddMedia={onAddMedia}
             onSave={onSaveMedia}
             onRemove={onRemoveMedia}
+            setLists={setLists}
           />
         );
       })}

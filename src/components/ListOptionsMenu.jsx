@@ -17,12 +17,13 @@ import AddMediaDialog from "./AddMediaDialog";
 import useMenu from "../hooks/useMenu";
 import DialogContentText from "@mui/material/DialogContentText";
 
-export default function ListOptionsMenu({ list, lists, name, onAddMedia }) {
+export default function ListOptionsMenu({ list, lists, onAddMedia, setLists }) {
   const { menuAnchor, isMenuOpen, handleMenuOpen, handleMenuClose } = useMenu();
 
   const [addMediaOpen, setAddMediaOpen] = useState(false);
   const [renameOpen, setRenameOpen] = useState(false);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
+  const name = list.get("name") ?? "";
 
   // Remember what the user types as the new list name.
   const [newName, setNewName] = useState(name);
@@ -47,33 +48,37 @@ export default function ListOptionsMenu({ list, lists, name, onAddMedia }) {
     setConfirmationOpen(true);
   }
 
-  function handleConfirmDelete() {
-    setConfirmationOpen(false);
-    deleteList(list);
-    handleMenuClose();
+  async function handleConfirmDelete() {
+    try {
+      await deleteList(list);
+
+      setLists((prevLists) => prevLists.filter((each) => each.id !== list.id));
+
+      setConfirmationOpen(false);
+      handleMenuClose();
+    } catch (error) {
+      alert(error.message);
+    }
   }
 
-  // Runs when the user clicks Save.
   async function handleRenameSave() {
-    // Don't allow empty names.
     if (!newName.trim()) return;
 
     setIsSaving(true);
 
     try {
-      // Save the new name to Back4App.
       await renameList(list, newName);
 
-      // Close the dialog after saving successfully.
+      // Trigger a re-render without changing the Parse objects.
+      setLists((prevLists) => [...prevLists]);
+
       setRenameOpen(false);
     } catch (error) {
-      // Show an error if saving fails.
       alert(error.message);
     } finally {
       setIsSaving(false);
     }
   }
-
   return (
     <>
       <IconButton
@@ -140,7 +145,10 @@ export default function ListOptionsMenu({ list, lists, name, onAddMedia }) {
         defaultListId={list.id}
         onAddMedia={onAddMedia}
       />
-      <Dialog open={confirmationOpen} onClose={() => confirmationOpen(false)}>
+      <Dialog
+        open={confirmationOpen}
+        onClose={() => setConfirmationOpen(false)}
+      >
         <DialogTitle>Delete list?</DialogTitle>
         <DialogContent>
           <DialogContentText>"{name}" will be deleted.</DialogContentText>
